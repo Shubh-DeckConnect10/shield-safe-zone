@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Drawer } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { Shield, Phone, MessageSquare, BookOpen, AlertCircle, Settings, Menu, Bell, Home, History, CheckCircle, AlertTriangle } from "lucide-react";
+import { Shield, Phone, MessageSquare, BookOpen, AlertCircle, Settings, Menu, Bell, Home, History } from "lucide-react";
 import { toast } from "sonner";
 import { useIsMobile } from "@/hooks/use-mobile";
 import HomePage from "@/components/HomePage";

@@ -6,7 +6,6 @@ import { Shield, MessageSquare, Phone, Search, Filter, ArrowLeft, Calendar, Chec
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { toast } from "sonner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 type ThreatType = "sms" | "call";
 type RiskLevel = "high" | "medium" | "low";
 
+// Update the ThreatDetail interface to include feedback
 interface ThreatDetail {
   id: string;
   type: ThreatType;
@@ -116,15 +116,18 @@ const ThreatHistory = () => {
   };
   
   const filteredThreats = mockThreats.filter(threat => {
+    // Apply search filter
     if (searchQuery && !threat.content.toLowerCase().includes(searchQuery.toLowerCase()) && 
         !threat.source.toLowerCase().includes(searchQuery.toLowerCase())) {
       return false;
     }
     
+    // Apply risk level filter
     if (filterRisk !== "all" && threat.riskLevel !== filterRisk) {
       return false;
     }
     
+    // Apply threat type filter
     if (filterType !== "all" && threat.type !== filterType) {
       return false;
     }
@@ -133,11 +136,16 @@ const ThreatHistory = () => {
   });
 
   const submitFeedback = (id: string, feedback: "safe" | "unsafe" | "uncertain") => {
+    // setMessages(messages.map(message => 
+    //   message.id === id ? { ...message, feedback } : message
+    // ));
+    
     toast.success("Thank you for your feedback", {
       description: "Your input helps improve our detection system."
     });
   };
 
+  // In the render section, update the card content to include feedback buttons:
   return (
     <div className="flex flex-col h-full">
       <div className="border-b p-4 flex items-center gap-2">
