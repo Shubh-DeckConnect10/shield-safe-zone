@@ -3,10 +3,11 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Shield, AlertCircle, Search, ArrowRight, TrendingUp, BookOpen } from "lucide-react";
+import { Shield, AlertCircle, Search, ArrowRight, TrendingUp, BookOpen, History } from "lucide-react";
 import type { ProtectionStatus } from "./ScamShield";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
 
 type HomePageProps = {
   setProtectionStatus: (status: ProtectionStatus) => void;
@@ -116,22 +117,24 @@ const HomePage = ({ setProtectionStatus }: HomePageProps) => {
             </CardContent>
           </Card>
 
-          <Card className="bg-amber-50 dark:bg-amber-900/20">
-            <CardContent className="p-4">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                  <TrendingUp className="h-6 w-6 text-amber-600 dark:text-amber-400" />
-                  <div>
-                    <h3 className="font-medium">Recent Threats</h3>
-                    <p className="text-xs text-muted-foreground">View blocked scam attempts</p>
+          <Link to="/history">
+            <Card className="bg-amber-50 dark:bg-amber-900/20">
+              <CardContent className="p-4">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-3">
+                    <History className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+                    <div>
+                      <h3 className="font-medium">Threat History</h3>
+                      <p className="text-xs text-muted-foreground">View detected scam attempts</p>
+                    </div>
                   </div>
+                  <Button size="sm" variant="ghost">
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
                 </div>
-                <Button size="sm" variant="ghost">
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </Link>
 
           <Card className="bg-green-50 dark:bg-green-900/20">
             <CardContent className="p-4">

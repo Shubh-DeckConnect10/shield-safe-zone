@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Drawer } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { Shield, Phone, MessageSquare, BookOpen, AlertCircle, Settings, Menu, Bell, CheckCircle, XCircle, AlertTriangle } from "lucide-react";
+import { Shield, Phone, MessageSquare, BookOpen, AlertCircle, Settings, Menu, Bell, CheckCircle, XCircle, AlertTriangle, History } from "lucide-react";
 import { toast } from "sonner";
 import { useIsMobile } from "@/hooks/use-mobile";
 import HomePage from "@/components/HomePage";
@@ -13,6 +13,9 @@ import EmergencyAssistance from "@/components/EmergencyAssistance";
 import SettingsPage from "@/components/SettingsPage";
 import AboutHelp from "@/components/AboutHelp";
 import { Card } from "@/components/ui/card";
+import LoadingScreen from "@/components/LoadingScreen";
+import SetupWizard from "@/components/SetupWizard";
+import ThreatHistory from "@/components/ThreatHistory";
 
 export type AppPage = 
   | "home" 
@@ -21,7 +24,8 @@ export type AppPage =
   | "education" 
   | "emergency" 
   | "settings" 
-  | "about";
+  | "about"
+  | "history";
 
 export type ProtectionStatus = "protected" | "at-risk" | "critical";
 
@@ -31,7 +35,40 @@ const ScamShield = () => {
   const [protectionStatus, setProtectionStatus] = useState<ProtectionStatus>("protected");
   const isMobile = useIsMobile();
   const [darkMode, setDarkMode] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showSetup, setShowSetup] = useState(false);
   
+  // Check if this is the first app launch
+  useEffect(() => {
+    const hasCompletedSetup = localStorage.getItem("setupCompleted");
+    
+    // Simulate initial loading
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+      if (!hasCompletedSetup) {
+        setShowSetup(true);
+      }
+    }, 2000);
+    
+    return () => clearTimeout(timer);
+  }, []);
+  
+  const completeSetup = () => {
+    localStorage.setItem("setupCompleted", "true");
+    setShowSetup(false);
+    toast.success("Setup completed!", {
+      description: "You're now protected against scams."
+    });
+  };
+  
+  const skipSetup = () => {
+    localStorage.setItem("setupCompleted", "true");
+    setShowSetup(false);
+    toast("Setup skipped", {
+      description: "You can complete setup later in Settings."
+    });
+  };
+
   useEffect(() => {
     // Demo effect: Show welcome toast on first load
     setTimeout(() => {
@@ -89,6 +126,8 @@ const ScamShield = () => {
         return <SettingsPage darkMode={darkMode} toggleDarkMode={toggleDarkMode} />;
       case "about":
         return <AboutHelp />;
+      case "history":
+        return <ThreatHistory />;
       default:
         return <HomePage setProtectionStatus={setProtectionStatus} />;
     }
@@ -97,12 +136,21 @@ const ScamShield = () => {
   const menuItems = [
     { id: "home", label: "Home", icon: <Shield className="h-5 w-5" /> },
     { id: "sms", label: "SMS Scam Detection", icon: <MessageSquare className="h-5 w-5" /> },
-    { id: "call", label: "Call Scam Monitoring", icon: <Phone className="h-5 w-5" /> },
+    { id: "call", label: "Call Monitoring", icon: <Phone className="h-5 w-5" /> },
+    { id: "history", label: "Threat History", icon: <History className="h-5 w-5" /> },
     { id: "education", label: "Scam Education Hub", icon: <BookOpen className="h-5 w-5" /> },
     { id: "emergency", label: "Emergency Assistance", icon: <AlertCircle className="h-5 w-5" /> },
     { id: "settings", label: "Settings", icon: <Settings className="h-5 w-5" /> },
     { id: "about", label: "About/Help", icon: <Bell className="h-5 w-5" /> },
   ];
+
+  if (isLoading) {
+    return <LoadingScreen onLoadingComplete={() => setIsLoading(false)} />;
+  }
+  
+  if (showSetup) {
+    return <SetupWizard onComplete={completeSetup} onSkip={skipSetup} />;
+  }
 
   return (
     <div className={`flex flex-col min-h-screen ${darkMode ? 'dark' : ''}`}>

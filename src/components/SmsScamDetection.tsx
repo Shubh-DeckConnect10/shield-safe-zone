@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 type RiskLevel = "low" | "medium" | "high";
 
@@ -18,6 +19,8 @@ interface SmsMessage {
   message: string;
   date: string;
   riskLevel: RiskLevel;
+  reasons?: string[];
+  detectedWords?: { word: string, count: number }[];
 }
 
 const SmsScamDetection = () => {
@@ -30,28 +33,72 @@ const SmsScamDetection = () => {
       sender: "+91 98765 43210",
       message: "Your bank account has been compromised. Call immediately on this number to secure...",
       date: "10 min ago",
-      riskLevel: "high"
+      riskLevel: "high",
+      reasons: [
+        "Urgent action requested",
+        "Banking/financial vocabulary detected",
+        "Contains suspicious phone number pattern"
+      ],
+      detectedWords: [
+        { word: "bank", count: 1 },
+        { word: "compromised", count: 1 },
+        { word: "immediately", count: 1 },
+        { word: "secure", count: 1 }
+      ]
     },
     {
       id: "sms2",
       sender: "BANKUPI",
       message: "Your UPI verification is pending. Please click on the following link to complete...",
       date: "Yesterday",
-      riskLevel: "high"
+      riskLevel: "high",
+      reasons: [
+        "Suspected phishing link detected",
+        "UPI related terminology",
+        "Impersonating official banking service"
+      ],
+      detectedWords: [
+        { word: "UPI", count: 1 },
+        { word: "verification", count: 1 },
+        { word: "link", count: 1 },
+        { word: "click", count: 1 }
+      ]
     },
     {
       id: "sms3",
       sender: "+91 88123 45678",
       message: "Congratulations! You've won a special prize. Call now to claim your reward...",
       date: "2 days ago",
-      riskLevel: "medium"
+      riskLevel: "medium",
+      reasons: [
+        "Contest/lottery scam pattern detected",
+        "Suspicious urgency in message",
+        "Unknown sender claiming to offer prizes"
+      ],
+      detectedWords: [
+        { word: "congratulations", count: 1 },
+        { word: "won", count: 1 },
+        { word: "prize", count: 1 },
+        { word: "claim", count: 1 }
+      ]
     },
     {
       id: "sms4",
       sender: "ADHAR",
       message: "Your Aadhaar card will be deactivated today. Please update your KYC by visiting...",
       date: "2 days ago",
-      riskLevel: "high"
+      riskLevel: "high",
+      reasons: [
+        "Government service impersonation",
+        "Threatening language about document deactivation",
+        "Contains suspicious URL pattern"
+      ],
+      detectedWords: [
+        { word: "aadhaar", count: 1 },
+        { word: "deactivated", count: 1 },
+        { word: "KYC", count: 1 },
+        { word: "update", count: 1 }
+      ]
     }
   ]);
 
@@ -211,6 +258,42 @@ const SmsScamDetection = () => {
                       {getRiskBadge(message.riskLevel)}
                     </div>
                     <p className="text-sm">{message.message}</p>
+                    
+                    {message.reasons && (
+                      <Accordion type="single" collapsible className="w-full">
+                        <AccordionItem value="item-1" className="border-none">
+                          <AccordionTrigger className="py-1 text-xs text-muted-foreground hover:no-underline">
+                            Why was this message flagged?
+                          </AccordionTrigger>
+                          <AccordionContent>
+                            <ul className="text-xs text-muted-foreground pl-2 space-y-1">
+                              {message.reasons.map((reason, idx) => (
+                                <li key={idx} className="flex items-center gap-1">
+                                  <span className="h-1 w-1 rounded-full bg-current"></span>
+                                  {reason}
+                                </li>
+                              ))}
+                            </ul>
+                            
+                            {message.detectedWords && (
+                              <div className="mt-2">
+                                <p className="text-xs font-medium text-muted-foreground">
+                                  Detected suspicious words:
+                                </p>
+                                <div className="flex flex-wrap gap-1 mt-1">
+                                  {message.detectedWords.map((word, idx) => (
+                                    <Badge key={idx} variant="outline" className="text-xs">
+                                      {word.word} ({word.count})
+                                    </Badge>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
+                    )}
+                    
                     <div className="flex gap-2 pt-1">
                       <Button 
                         variant="outline" 

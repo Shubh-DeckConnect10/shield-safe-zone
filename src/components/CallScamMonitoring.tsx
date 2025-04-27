@@ -9,6 +9,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 type CallStatus = "safe" | "suspicious" | "blocked";
 
@@ -18,6 +19,8 @@ interface CallRecord {
   date: string;
   status: CallStatus;
   duration?: string;
+  reasons?: string[];
+  detectedWords?: { word: string, count: number }[];
 }
 
 const CallScamMonitoring = () => {
@@ -28,34 +31,75 @@ const CallScamMonitoring = () => {
       id: "call1",
       number: "+91 98765 43210",
       date: "Today, 12:30 PM",
-      status: "blocked"
+      status: "suspicious",
+      reasons: [
+        "Caller used UPI-related vocabulary",
+        "Matched pattern of known scam calls",
+        "Caller asked for personal information"
+      ],
+      detectedWords: [
+        { word: "UPI", count: 3 },
+        { word: "verify", count: 2 },
+        { word: "urgent", count: 1 }
+      ]
     },
     {
       id: "call2",
       number: "+91 88123 45678",
       date: "Today, 10:15 AM",
       status: "suspicious",
-      duration: "0:42"
+      duration: "0:42",
+      reasons: [
+        "User opened banking app immediately after call",
+        "Call duration matches typical scam pattern",
+        "Caller used urgent language"
+      ],
+      detectedWords: [
+        { word: "bank", count: 2 },
+        { word: "account", count: 3 },
+        { word: "urgent", count: 2 }
+      ]
     },
     {
       id: "call3",
       number: "Fake Bank",
       date: "Yesterday, 3:20 PM",
-      status: "blocked"
+      status: "suspicious",
+      reasons: [
+        "Caller impersonated a bank official",
+        "Asked for OTP or password",
+        "Used threatening language about account suspension"
+      ],
+      detectedWords: [
+        { word: "OTP", count: 2 },
+        { word: "suspend", count: 1 },
+        { word: "immediate", count: 2 }
+      ]
     },
     {
       id: "call4",
       number: "+91 77654 32109",
       date: "Yesterday, 11:05 AM",
       status: "safe",
-      duration: "3:15"
+      duration: "3:15",
+      reasons: ["No suspicious patterns detected"]
     },
     {
       id: "call5",
       number: "Unknown",
       date: "2 days ago, 4:45 PM",
       status: "suspicious",
-      duration: "1:03"
+      duration: "1:03",
+      reasons: [
+        "Suspicious calling pattern",
+        "Known scam number format",
+        "Asked user to download remote access app"
+      ],
+      detectedWords: [
+        { word: "download", count: 2 },
+        { word: "access", count: 1 },
+        { word: "control", count: 1 }
+      ]
     }
   ]);
 
@@ -110,7 +154,7 @@ const CallScamMonitoring = () => {
             <CardTitle className="flex justify-between items-center">
               <div className="flex items-center gap-2">
                 <Phone className="h-5 w-5 text-primary" />
-                <span>Call Protection</span>
+                <span>Call Monitoring</span>
               </div>
               <Switch 
                 checked={isProtectionActive} 
@@ -121,15 +165,15 @@ const CallScamMonitoring = () => {
           <CardContent>
             <p className="text-sm text-muted-foreground">
               {isProtectionActive 
-                ? "Call protection is active. We'll screen incoming calls for potential scams." 
-                : "Call protection is disabled. Enable it to detect scam calls."}
+                ? "Call monitoring is active. We'll analyze incoming calls for potential scams and provide real-time warnings." 
+                : "Call monitoring is disabled. Enable it to receive warnings about suspicious calls."}
             </p>
             {isProtectionActive && (
               <div className="mt-4 p-2 bg-green-50 dark:bg-green-900/20 rounded-md">
                 <div className="flex items-center gap-2">
                   <Shield className="h-4 w-4 text-green-600" />
                   <p className="text-xs text-green-700 dark:text-green-400">
-                    Protected: <span className="font-medium">12 calls</span> screened in the last 7 days
+                    Monitored: <span className="font-medium">12 calls</span> analyzed in the last 7 days
                   </p>
                 </div>
               </div>
@@ -142,7 +186,7 @@ const CallScamMonitoring = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
               <Settings className="h-5 w-5 text-primary" />
-              <span>Vibration Alert Settings</span>
+              <span>Alert Settings</span>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -175,7 +219,7 @@ const CallScamMonitoring = () => {
         <div className="space-y-2">
           <h2 className="text-lg font-medium flex items-center gap-2">
             <Phone className="h-5 w-5 text-primary" />
-            <span>Call History</span>
+            <span>Call Monitoring History</span>
             <Badge variant="secondary" className="ml-2">{callRecords.length}</Badge>
           </h2>
           
@@ -206,17 +250,40 @@ const CallScamMonitoring = () => {
                   
                   {call.status === "suspicious" && (
                     <div className="mt-1 p-2 bg-amber-50 dark:bg-amber-900/20 rounded-md">
-                      <p className="text-xs text-amber-700 dark:text-amber-400">
-                        This call matched patterns of known scam calls. Exercise caution.
-                      </p>
-                    </div>
-                  )}
-                  
-                  {call.status === "blocked" && (
-                    <div className="mt-1 p-2 bg-red-50 dark:bg-red-900/20 rounded-md">
-                      <p className="text-xs text-red-700 dark:text-red-400">
-                        This call was blocked because it was identified as a potential scam.
-                      </p>
+                      <Accordion type="single" collapsible className="w-full">
+                        <AccordionItem value="item-1" className="border-none">
+                          <AccordionTrigger className="py-1 text-xs text-amber-700 dark:text-amber-400 hover:no-underline">
+                            Why was this call flagged?
+                          </AccordionTrigger>
+                          <AccordionContent>
+                            {call.reasons && (
+                              <ul className="text-xs text-amber-700 dark:text-amber-400 pl-2 space-y-1">
+                                {call.reasons.map((reason, idx) => (
+                                  <li key={idx} className="flex items-center gap-1">
+                                    <span className="h-1 w-1 rounded-full bg-current"></span>
+                                    {reason}
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                            
+                            {call.detectedWords && (
+                              <div className="mt-2">
+                                <p className="text-xs font-medium text-amber-700 dark:text-amber-400">
+                                  Detected suspicious words:
+                                </p>
+                                <div className="flex flex-wrap gap-1 mt-1">
+                                  {call.detectedWords.map((word, idx) => (
+                                    <Badge key={idx} variant="outline" className="text-xs bg-amber-100 text-amber-800 border-amber-300">
+                                      {word.word} ({word.count})
+                                    </Badge>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
                     </div>
                   )}
                 </CardContent>
