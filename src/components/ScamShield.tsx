@@ -1,5 +1,6 @@
+
 import { useEffect, useState } from "react";
-import { Drawer } from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerTrigger, DrawerOverlay } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { Shield, Phone, MessageSquare, BookOpen, AlertCircle, Settings, Menu, Bell, Home, History, CheckCircle, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
@@ -151,9 +152,47 @@ const ScamShield = () => {
     <div className={`flex flex-col min-h-screen ${darkMode ? 'dark' : ''}`}>
       <header className="sticky top-0 z-10 bg-primary text-primary-foreground p-4 flex justify-between items-center shadow-md">
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" onClick={() => setDrawerOpen(true)}>
-            <Menu className="h-6 w-6" />
-          </Button>
+          <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
+            <DrawerTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Menu className="h-6 w-6" />
+              </Button>
+            </DrawerTrigger>
+            <DrawerOverlay />
+            <DrawerContent className="h-[90vh] flex flex-col">
+              <div className="p-4 bg-background h-full overflow-y-auto">
+                <div className="flex items-center gap-2 mb-8">
+                  <Shield className="h-8 w-8 text-primary" />
+                  <h2 className="text-xl font-medium">Shield Safe Zone</h2>
+                </div>
+                
+                <nav className="space-y-1">
+                  {menuItems.map((item) => (
+                    <Button
+                      key={item.id}
+                      variant={currentPage === item.id ? "secondary" : "ghost"}
+                      className={`w-full justify-start text-left ${
+                        currentPage === item.id ? "bg-secondary" : ""
+                      }`}
+                      onClick={() => handlePageChange(item.id as AppPage)}
+                    >
+                      <span className="mr-3">{item.icon}</span>
+                      {item.label}
+                    </Button>
+                  ))}
+                </nav>
+                
+                <div className="mt-auto pt-8">
+                  <Card className="p-4 bg-primary/10">
+                    <div className="flex items-center gap-2 text-sm">
+                      <Shield className="h-4 w-4" />
+                      <span>v1.0.0 Beta</span>
+                    </div>
+                  </Card>
+                </div>
+              </div>
+            </DrawerContent>
+          </Drawer>
           <h1 className="text-xl font-medium">Shield Safe Zone</h1>
         </div>
         <div className="flex items-center gap-2">
@@ -174,44 +213,6 @@ const ScamShield = () => {
       <main className="flex-1 transition-opacity duration-300 ease-in-out">
         {renderPage()}
       </main>
-      
-      <Drawer 
-        open={drawerOpen} 
-        onOpenChange={setDrawerOpen} 
-        onClose={() => setDrawerOpen(false)}
-      >
-        <div className="p-4 bg-background h-full overflow-y-auto">
-          <div className="flex items-center gap-2 mb-8">
-            <Shield className="h-8 w-8 text-primary" />
-            <h2 className="text-xl font-medium">Shield Safe Zone</h2>
-          </div>
-          
-          <nav className="space-y-1">
-            {menuItems.map((item) => (
-              <Button
-                key={item.id}
-                variant={currentPage === item.id ? "secondary" : "ghost"}
-                className={`w-full justify-start text-left ${
-                  currentPage === item.id ? "bg-secondary" : ""
-                }`}
-                onClick={() => handlePageChange(item.id as AppPage)}
-              >
-                <span className="mr-3">{item.icon}</span>
-                {item.label}
-              </Button>
-            ))}
-          </nav>
-          
-          <div className="mt-auto pt-8">
-            <Card className="p-4 bg-primary/10">
-              <div className="flex items-center gap-2 text-sm">
-                <Shield className="h-4 w-4" />
-                <span>v1.0.0 Beta</span>
-              </div>
-            </Card>
-          </div>
-        </div>
-      </Drawer>
     </div>
   );
 };
