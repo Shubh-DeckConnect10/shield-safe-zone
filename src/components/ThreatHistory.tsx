@@ -1,9 +1,8 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Shield, MessageSquare, Phone, Search, Filter, ArrowLeft, Calendar } from "lucide-react";
+import { Shield, MessageSquare, Phone, Search, Filter, ArrowLeft, Calendar, CheckCircle, AlertTriangle, HelpCircle } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -18,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 type ThreatType = "sms" | "call";
 type RiskLevel = "high" | "medium" | "low";
 
+// Update the ThreatDetail interface to include feedback
 interface ThreatDetail {
   id: string;
   type: ThreatType;
@@ -27,6 +27,7 @@ interface ThreatDetail {
   content: string;
   reasons: string[];
   threatWords?: { word: string; count: number }[];
+  feedback?: "safe" | "unsafe" | "uncertain";
 }
 
 const ThreatHistory = () => {
@@ -134,6 +135,17 @@ const ThreatHistory = () => {
     return true;
   });
 
+  const submitFeedback = (id: string, feedback: "safe" | "unsafe" | "uncertain") => {
+    // setMessages(messages.map(message => 
+    //   message.id === id ? { ...message, feedback } : message
+    // ));
+    
+    toast.success("Thank you for your feedback", {
+      description: "Your input helps improve our detection system."
+    });
+  };
+
+  // In the render section, update the card content to include feedback buttons:
   return (
     <div className="flex flex-col h-full">
       <div className="border-b p-4 flex items-center gap-2">
@@ -305,6 +317,33 @@ const ThreatHistory = () => {
                         </div>
                       </div>
                     )}
+                  </div>
+                  
+                  <div className="mt-3 flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className={`${threat.feedback === 'safe' ? 'bg-green-100' : ''}`}
+                      onClick={() => submitFeedback(threat.id, 'safe')}
+                    >
+                      <CheckCircle className="h-4 w-4 mr-1" /> Safe
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className={`${threat.feedback === 'unsafe' ? 'bg-red-100' : ''}`}
+                      onClick={() => submitFeedback(threat.id, 'unsafe')}
+                    >
+                      <AlertTriangle className="h-4 w-4 mr-1" /> Unsafe
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className={`${threat.feedback === 'uncertain' ? 'bg-yellow-100' : ''}`}
+                      onClick={() => submitFeedback(threat.id, 'uncertain')}
+                    >
+                      <HelpCircle className="h-4 w-4 mr-1" /> Not Sure
+                    </Button>
                   </div>
                 </CardContent>
               </Card>

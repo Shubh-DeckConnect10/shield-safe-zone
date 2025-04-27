@@ -1,8 +1,7 @@
-
 import { useEffect, useState } from "react";
 import { Drawer } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { Shield, Phone, MessageSquare, BookOpen, AlertCircle, Settings, Menu, Bell, CheckCircle, XCircle, AlertTriangle, History } from "lucide-react";
+import { Shield, Phone, MessageSquare, BookOpen, AlertCircle, Settings, Menu, Bell, Home, History } from "lucide-react";
 import { toast } from "sonner";
 import { useIsMobile } from "@/hooks/use-mobile";
 import HomePage from "@/components/HomePage";
@@ -38,11 +37,9 @@ const ScamShield = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showSetup, setShowSetup] = useState(false);
   
-  // Check if this is the first app launch
   useEffect(() => {
     const hasCompletedSetup = localStorage.getItem("setupCompleted");
     
-    // Simulate initial loading
     const timer = setTimeout(() => {
       setIsLoading(false);
       if (!hasCompletedSetup) {
@@ -70,7 +67,6 @@ const ScamShield = () => {
   };
 
   useEffect(() => {
-    // Demo effect: Show welcome toast on first load
     setTimeout(() => {
       toast.success("Shield Safe Zone activated!", {
         description: "You're now protected from scams."
@@ -82,7 +78,6 @@ const ScamShield = () => {
     setCurrentPage(page);
     setDrawerOpen(false);
     
-    // Simulate page transition animation
     document.querySelector("main")?.classList.add("page-transition");
     setTimeout(() => {
       document.querySelector("main")?.classList.remove("page-transition");
@@ -134,12 +129,12 @@ const ScamShield = () => {
   };
 
   const menuItems = [
-    { id: "home", label: "Home", icon: <Shield className="h-5 w-5" /> },
-    { id: "sms", label: "SMS Scam Detection", icon: <MessageSquare className="h-5 w-5" /> },
+    { id: "home", label: "Home", icon: <Home className="h-5 w-5" /> },
+    { id: "sms", label: "SMS Detection", icon: <MessageSquare className="h-5 w-5" /> },
     { id: "call", label: "Call Monitoring", icon: <Phone className="h-5 w-5" /> },
     { id: "history", label: "Threat History", icon: <History className="h-5 w-5" /> },
-    { id: "education", label: "Scam Education Hub", icon: <BookOpen className="h-5 w-5" /> },
-    { id: "emergency", label: "Emergency Assistance", icon: <AlertCircle className="h-5 w-5" /> },
+    { id: "education", label: "Scam Education", icon: <BookOpen className="h-5 w-5" /> },
+    { id: "emergency", label: "Emergency Help", icon: <AlertCircle className="h-5 w-5" /> },
     { id: "settings", label: "Settings", icon: <Settings className="h-5 w-5" /> },
     { id: "about", label: "About/Help", icon: <Bell className="h-5 w-5" /> },
   ];
@@ -154,7 +149,6 @@ const ScamShield = () => {
 
   return (
     <div className={`flex flex-col min-h-screen ${darkMode ? 'dark' : ''}`}>
-      {/* App Bar */}
       <header className="sticky top-0 z-10 bg-primary text-primary-foreground p-4 flex justify-between items-center shadow-md">
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" onClick={() => setDrawerOpen(true)}>
@@ -163,21 +157,31 @@ const ScamShield = () => {
           <h1 className="text-xl font-medium">Shield Safe Zone</h1>
         </div>
         <div className="flex items-center gap-2">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => handlePageChange("home")}
+            className="text-primary-foreground"
+          >
+            <Home className="h-5 w-5" />
+          </Button>
           <div className={`flex items-center justify-center h-8 w-8 rounded-full ${getStatusColor()}`}>
             {getStatusIcon()}
           </div>
         </div>
       </header>
 
-      {/* Page Content */}
       <main className="flex-1 transition-opacity duration-300 ease-in-out">
         {renderPage()}
       </main>
       
-      {/* Navigation Drawer */}
-      <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
-        <div className="p-4 bg-sidebar text-sidebar-foreground h-full overflow-auto">
-          <div className="flex items-center gap-2 mb-8 p-4">
+      <Drawer 
+        open={drawerOpen} 
+        onOpenChange={setDrawerOpen} 
+        onClose={() => setDrawerOpen(false)}
+      >
+        <div className="p-4 bg-background h-full overflow-y-auto">
+          <div className="flex items-center gap-2 mb-8">
             <Shield className="h-8 w-8 text-primary" />
             <h2 className="text-xl font-medium">Shield Safe Zone</h2>
           </div>
@@ -187,7 +191,9 @@ const ScamShield = () => {
               <Button
                 key={item.id}
                 variant={currentPage === item.id ? "secondary" : "ghost"}
-                className={`w-full justify-start text-left ${currentPage === item.id ? 'bg-secondary' : ''}`}
+                className={`w-full justify-start text-left ${
+                  currentPage === item.id ? "bg-secondary" : ""
+                }`}
                 onClick={() => handlePageChange(item.id as AppPage)}
               >
                 <span className="mr-3">{item.icon}</span>
