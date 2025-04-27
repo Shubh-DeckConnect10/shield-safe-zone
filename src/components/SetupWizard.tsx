@@ -253,7 +253,7 @@ const SetupWizard = ({ onComplete, onSkip }: SetupWizardProps) => {
               if (prevIndex >= 0) {
                 setCurrentStep(steps[prevIndex] as SetupStep);
               }
-            }} disabled={currentStep === "intro"}>
+            }} disabled={currentStepIndex === 0}>
               Back
             </Button>
           )}
