@@ -6,8 +6,11 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { toast } from "sonner";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const AboutHelp = () => {
+  const { t } = useLanguage();
+  
   const faqs = [
     {
       question: "How does Shield Safe Zone detect scams?",
@@ -32,8 +35,8 @@ const AboutHelp = () => {
   ];
   
   const showContactSupport = () => {
-    toast.success("Support ticket created", {
-      description: "Our team will get back to you within 24 hours."
+    toast.success(t("success.support"), {
+      description: t("success.support.desc")
     });
   };
 
@@ -45,10 +48,10 @@ const AboutHelp = () => {
           <div className="mx-auto bg-primary/10 w-20 h-20 rounded-full flex items-center justify-center mb-4">
             <Shield className="h-12 w-12 text-primary" />
           </div>
-          <h1 className="text-2xl font-bold">Shield Safe Zone</h1>
-          <p className="text-sm text-muted-foreground">Version 1.0.0 Beta</p>
+          <h1 className="text-2xl font-bold">{t("app.name")}</h1>
+          <p className="text-sm text-muted-foreground">{t("app.version")}</p>
           <p className="text-sm max-w-[250px] mx-auto text-muted-foreground">
-            Your trusted guardian against digital scams and fraud
+            {t("app.tagline")}
           </p>
         </div>
         
@@ -58,7 +61,7 @@ const AboutHelp = () => {
         <div className="space-y-2">
           <h2 className="text-lg font-medium flex items-center gap-2">
             <FileQuestion className="h-5 w-5 text-primary" />
-            <span>Frequently Asked Questions</span>
+            <span>{t("about.faq")}</span>
           </h2>
           
           <Accordion type="single" collapsible className="w-full">
@@ -78,7 +81,7 @@ const AboutHelp = () => {
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
               <HelpCircle className="h-5 w-5 text-primary" />
-              <span>Need Help?</span>
+              <span>{t("about.help")}</span>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 pb-4">
@@ -88,19 +91,19 @@ const AboutHelp = () => {
               onClick={showContactSupport}
             >
               <MessageSquare className="h-4 w-4 text-primary" />
-              <span>Chat with Support</span>
+              <span>{t("about.chat")}</span>
               <ChevronRight className="h-4 w-4 ml-auto" />
             </Button>
             
             <Button className="w-full justify-start gap-2" variant="outline">
               <Mail className="h-4 w-4 text-primary" />
-              <span>Email Support</span>
+              <span>{t("about.email")}</span>
               <ChevronRight className="h-4 w-4 ml-auto" />
             </Button>
             
             <Button className="w-full justify-start gap-2" variant="outline">
               <Phone className="h-4 w-4 text-primary" />
-              <span>Call Support</span>
+              <span>{t("about.call")}</span>
               <ChevronRight className="h-4 w-4 ml-auto" />
             </Button>
           </CardContent>
@@ -109,15 +112,15 @@ const AboutHelp = () => {
         {/* Learn More */}
         <Card>
           <CardContent className="p-4 space-y-3">
-            <h3 className="font-medium">Learn More</h3>
+            <h3 className="font-medium">{t("about.learn")}</h3>
             
             <Button variant="outline" className="w-full justify-between">
-              <span>Privacy Policy</span>
+              <span>{t("about.privacy")}</span>
               <ExternalLink className="h-4 w-4" />
             </Button>
             
             <Button variant="outline" className="w-full justify-between">
-              <span>Terms of Service</span>
+              <span>{t("about.terms")}</span>
               <ExternalLink className="h-4 w-4" />
             </Button>
           </CardContent>
@@ -125,8 +128,8 @@ const AboutHelp = () => {
         
         {/* Credits */}
         <div className="text-center text-xs text-muted-foreground space-y-1 pt-2">
-          <p>© 2025 Shield Safe Zone</p>
-          <p>All Rights Reserved</p>
+          <p>© 2025 {t("app.name")}</p>
+          <p>{t("about.rights")}</p>
         </div>
       </div>
     </ScrollArea>

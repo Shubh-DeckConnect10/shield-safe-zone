@@ -1,10 +1,12 @@
 
 import { useState, useEffect } from "react";
 import { Shield } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const LoadingScreen = ({ onLoadingComplete }: { onLoadingComplete: () => void }) => {
   const [progress, setProgress] = useState(0);
-  const [message, setMessage] = useState("Initializing...");
+  const [messageIndex, setMessageIndex] = useState(0);
+  const { t } = useLanguage();
   
   useEffect(() => {
     // Simulate loading process
@@ -26,8 +28,8 @@ const LoadingScreen = ({ onLoadingComplete }: { onLoadingComplete: () => void })
         }
         
         // Update loading message based on progress
-        const messageIndex = Math.floor((prev / 100) * messages.length);
-        setMessage(messages[Math.min(messageIndex, messages.length - 1)]);
+        const newMessageIndex = Math.floor((prev / 100) * messages.length);
+        setMessageIndex(Math.min(newMessageIndex, messages.length - 1));
         
         return prev + 2;
       });
@@ -41,7 +43,7 @@ const LoadingScreen = ({ onLoadingComplete }: { onLoadingComplete: () => void })
       <div className="text-center space-y-6 p-4">
         <Shield className="h-24 w-24 text-white mx-auto pulse-animation" />
         
-        <h1 className="text-2xl font-bold text-white">Shield Safe Zone</h1>
+        <h1 className="text-2xl font-bold text-white">{t("app.name")}</h1>
         
         <div className="w-64 bg-white/20 rounded-full h-2 overflow-hidden">
           <div 
@@ -50,7 +52,7 @@ const LoadingScreen = ({ onLoadingComplete }: { onLoadingComplete: () => void })
           />
         </div>
         
-        <p className="text-white/80 text-sm">{message}</p>
+        <p className="text-white/80 text-sm">{t("app.loading")}</p>
       </div>
     </div>
   );
