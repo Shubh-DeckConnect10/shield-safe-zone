@@ -20,7 +20,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
-import { useLanguage, Language } from "@/contexts/LanguageContext";
 
 interface SettingsPageProps {
   darkMode: boolean;
@@ -28,7 +27,6 @@ interface SettingsPageProps {
 }
 
 const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
-  const { language, setLanguage, t } = useLanguage();
   const [permissions, setPermissions] = useState({
     sms: true,
     calls: true,
@@ -39,6 +37,7 @@ const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
   const [backgroundSync, setBackgroundSync] = useState(true);
   const [localProcessing, setLocalProcessing] = useState(true);
   const [cloudBackup, setCloudBackup] = useState(false);
+  const [language, setLanguage] = useState("english");
   const [syncStatus, setSyncStatus] = useState({
     inProgress: false,
     progress: 0
@@ -48,8 +47,8 @@ const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
     setPermissions(prev => {
       const newState = { ...prev, [key]: !prev[key] };
       
-      toast(newState[key] ? t("permission_granted") : t("permission_disabled"), {
-        description: `${key.charAt(0).toUpperCase() + key.slice(1)} ${t("permission_has_been")} ${newState[key] ? t('enabled') : t('disabled')}.`
+      toast(newState[key] ? "Permission granted" : "Permission disabled", {
+        description: `${key.charAt(0).toUpperCase() + key.slice(1)} permission has been ${newState[key] ? 'enabled' : 'disabled'}.`
       });
       
       return newState;
@@ -59,38 +58,38 @@ const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
   const toggleBackgroundSync = () => {
     setBackgroundSync(!backgroundSync);
     
-    toast(!backgroundSync ? t("background_sync") + " " + t("enabled") : t("background_sync") + " " + t("disabled"), {
+    toast(!backgroundSync ? "Background sync enabled" : "Background sync disabled", {
       description: !backgroundSync 
-        ? t("keep_updated") 
-        : t("sms_protection_disabled")
+        ? "Scam database will be updated automatically in the background." 
+        : "Scam database will only update when app is open."
     });
   };
   
   const toggleLocalProcessing = () => {
     setLocalProcessing(!localProcessing);
     
-    toast(!localProcessing ? t("local_processing") + " " + t("enabled") : t("cloud_backup") + " " + t("enabled"), {
+    toast(!localProcessing ? "Local processing enabled" : "Cloud processing enabled", {
       description: !localProcessing 
-        ? t("process_device") 
-        : t("backup_settings")
+        ? "All scam detection will happen on your device for privacy." 
+        : "Scam detection will use cloud processing for better accuracy."
     });
   };
   
   const toggleCloudBackup = () => {
     setCloudBackup(!cloudBackup);
     
-    toast(!cloudBackup ? t("cloud_backup") + " " + t("enabled") : t("cloud_backup") + " " + t("disabled"), {
+    toast(!cloudBackup ? "Cloud backup enabled" : "Cloud backup disabled", {
       description: !cloudBackup 
-        ? t("backup_settings")
-        : t("cloud_backup") + " " + t("disabled")
+        ? "Your settings and preferences will be backed up to the cloud." 
+        : "Your settings will only be stored on this device."
     });
   };
   
-  const changeLanguage = (lang: Language) => {
+  const changeLanguage = (lang: string) => {
     setLanguage(lang);
     
-    toast(t("language") + " " + t("updated"), {
-      description: `${t("language")} ${lang}`
+    toast("Language updated", {
+      description: `App language has been changed to ${lang.charAt(0).toUpperCase() + lang.slice(1)}.`
     });
   };
   
@@ -98,8 +97,8 @@ const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
     if (syncStatus.inProgress) return;
     
     setSyncStatus({ inProgress: true, progress: 0 });
-    toast(t("sync_started"), {
-      description: t("updating_database")
+    toast("Database sync started", {
+      description: "Updating to the latest scam patterns..."
     });
     
     // Simulate sync process
@@ -109,8 +108,8 @@ const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
         
         if (newProgress >= 100) {
           clearInterval(interval);
-          toast.success(t("database_updated"), {
-            description: t("now_protected")
+          toast.success("Database updated", {
+            description: "You're protected with the latest scam patterns."
           });
           return { inProgress: false, progress: 100 };
         }
@@ -128,16 +127,16 @@ const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
               <Lock className="h-5 w-5 text-primary" />
-              <span>{t("app_permissions")}</span>
+              <span>App Permissions</span>
             </CardTitle>
             <CardDescription>
-              {t("control_access")}
+              Control what Shield Safe Zone can access
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <Label htmlFor="sms-permission" className="flex-1 cursor-pointer">
-                {t("sms_access")}
+                SMS Access
               </Label>
               <Switch 
                 id="sms-permission" 
@@ -148,7 +147,7 @@ const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
             
             <div className="flex items-center justify-between">
               <Label htmlFor="calls-permission" className="flex-1 cursor-pointer">
-                {t("call_access")}
+                Call Access
               </Label>
               <Switch 
                 id="calls-permission" 
@@ -159,7 +158,7 @@ const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
             
             <div className="flex items-center justify-between">
               <Label htmlFor="contacts-permission" className="flex-1 cursor-pointer">
-                {t("contacts_access")}
+                Contacts Access
               </Label>
               <Switch 
                 id="contacts-permission" 
@@ -170,7 +169,7 @@ const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
             
             <div className="flex items-center justify-between">
               <Label htmlFor="notifications-permission" className="flex-1 cursor-pointer">
-                {t("notifications")}
+                Notifications
               </Label>
               <Switch 
                 id="notifications-permission" 
@@ -186,18 +185,18 @@ const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
               <Database className="h-5 w-5 text-primary" />
-              <span>{t("scam_database")}</span>
+              <span>Scam Database</span>
             </CardTitle>
             <CardDescription>
-              {t("manage_updates")}
+              Manage scam pattern updates
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <Label htmlFor="bg-sync" className="flex-1">
-                <div>{t("background_sync")}</div>
+                <div>Background Sync</div>
                 <span className="text-xs text-muted-foreground">
-                  {t("keep_updated")}
+                  Keep scam patterns up-to-date automatically
                 </span>
               </Label>
               <Switch 
@@ -213,14 +212,14 @@ const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
               className="w-full gap-2"
             >
               <RefreshCw className={`h-4 w-4 ${syncStatus.inProgress ? 'animate-spin' : ''}`} />
-              {t("sync_now")}
+              Sync Now
             </Button>
             
             {syncStatus.inProgress && (
               <div className="space-y-1">
                 <Progress value={syncStatus.progress} />
                 <div className="flex justify-between items-center text-xs text-muted-foreground">
-                  <span>{t("updating_database")}</span>
+                  <span>Updating database...</span>
                   <span>{syncStatus.progress}%</span>
                 </div>
               </div>
@@ -228,7 +227,7 @@ const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
             
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <CheckCircle className="h-3 w-3 text-green-500" />
-              <span>{t("last_updated")}: Today, 2:30 PM</span>
+              <span>Last updated: Today, 2:30 PM</span>
             </div>
           </CardContent>
         </Card>
@@ -238,15 +237,15 @@ const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
               <Lock className="h-5 w-5 text-primary" />
-              <span>{t("privacy_settings")}</span>
+              <span>Privacy Settings</span>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <Label htmlFor="local-processing" className="flex-1">
-                <div>{t("local_processing")}</div>
+                <div>Local Processing</div>
                 <span className="text-xs text-muted-foreground">
-                  {t("process_device")}
+                  Process scam detection on device only
                 </span>
               </Label>
               <Switch 
@@ -258,9 +257,9 @@ const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
             
             <div className="flex items-center justify-between">
               <Label htmlFor="cloud-backup" className="flex-1">
-                <div>{t("cloud_backup")}</div>
+                <div>Cloud Backup</div>
                 <span className="text-xs text-muted-foreground">
-                  {t("backup_settings")}
+                  Backup settings and preferences
                 </span>
               </Label>
               <Switch 
@@ -281,15 +280,15 @@ const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
               ) : (
                 <Sun className="h-5 w-5 text-primary" />
               )}
-              <span>{t("appearance")}</span>
+              <span>Appearance</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
               <Label htmlFor="theme-toggle" className="flex-1">
-                <div>{t("dark_mode")}</div>
+                <div>Dark Mode</div>
                 <span className="text-xs text-muted-foreground">
-                  {t("theme_switch")}
+                  Switch between light and dark theme
                 </span>
               </Label>
               <Switch 
@@ -306,26 +305,26 @@ const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
               <Globe className="h-5 w-5 text-primary" />
-              <span>{t("language")}</span>
+              <span>Language</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <RadioGroup value={language} onValueChange={(value) => changeLanguage(value as Language)}>
+            <RadioGroup value={language} onValueChange={changeLanguage}>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="english" id="english" />
                 <Label htmlFor="english">English</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="hindi" id="hindi" />
-                <Label htmlFor="hindi">हिंदी</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="telugu" id="telugu" />
-                <Label htmlFor="telugu">తెలుగు</Label>
+                <Label htmlFor="hindi">Hindi</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="tamil" id="tamil" />
-                <Label htmlFor="tamil">தமிழ்</Label>
+                <Label htmlFor="tamil">Tamil</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="telugu" id="telugu" />
+                <Label htmlFor="telugu">Telugu</Label>
               </div>
             </RadioGroup>
           </CardContent>
@@ -335,9 +334,9 @@ const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
         <Card>
           <CardContent className="p-4 text-center text-sm text-muted-foreground">
             <div className="space-y-1">
-              <p>{t("app_name")}</p>
-              <p>{t("version")}</p>
-              <p>© 2025 {t("app_name")}</p>
+              <p>Shield Safe Zone</p>
+              <p>v1.0.0 Beta</p>
+              <p>© 2025 Shield Safe Zone</p>
             </div>
           </CardContent>
         </Card>
