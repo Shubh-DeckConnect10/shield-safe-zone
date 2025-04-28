@@ -208,12 +208,21 @@ export const translations: TranslationsType = {
     "this_week": "This Week",
     "this_month": "This Month",
     "all_time": "All Time",
-    "why_flagged": "Why was this flagged?",
     "detected_threat": "Detected threat words:",
     "unsafe": "Unsafe",
     "not_sure": "Not Sure",
     "no_threats": "No threats found",
-    "adjust_search": "Try adjusting your search or filters"
+    "adjust_search": "Try adjusting your search or filters",
+    
+    // Additional keys needed for settings
+    "permission_granted": "Permission granted",
+    "permission_disabled": "Permission disabled",
+    "permission_has_been": "permission has been",
+    "enabled": "enabled",
+    "disabled": "disabled",
+    "sync_started": "Sync started",
+    "database_updated": "Database updated",
+    "updated": "updated"
   },
   
   hindi: {
@@ -356,12 +365,21 @@ export const translations: TranslationsType = {
     "this_week": "इस सप्ताह",
     "this_month": "इस महीने",
     "all_time": "हमेशा",
-    "why_flagged": "यह फ्लैग क्यों किया गया?",
     "detected_threat": "पता लगाए गए खतरनाक शब्द:",
     "unsafe": "असुरक्षित",
     "not_sure": "निश्चित नहीं",
     "no_threats": "कोई खतरा नहीं मिला",
-    "adjust_search": "अपनी खोज या फ़िल्टर समायोजित करें"
+    "adjust_search": "अपनी खोज या फ़िल्टर समायोजित करें",
+    
+    // Additional keys needed for settings
+    "permission_granted": "अनुमति दी गई",
+    "permission_disabled": "अनुमति अक्षम की गई",
+    "permission_has_been": "अनुमति",
+    "enabled": "सक्षम की गई",
+    "disabled": "अक्षम की गई",
+    "sync_started": "सिंक शुरू हुआ",
+    "database_updated": "डेटाबेस अपडेट किया गया",
+    "updated": "अपडेट किया गया"
   },
   
   telugu: {
@@ -504,12 +522,21 @@ export const translations: TranslationsType = {
     "this_week": "ఈ వారం",
     "this_month": "ఈ నెల",
     "all_time": "ఎల్లప్పుడూ",
-    "why_flagged": "ఇది ఎందుకు ఫ్లాగ్ చేయబడింది?",
     "detected_threat": "గుర్తించబడిన ప్రమాదకరమైన పదాలు:",
     "unsafe": "అసురక్షితం",
     "not_sure": "ఖచ్చితంగా తెలియదు",
     "no_threats": "ప్రమాదాలు ఏవీ కనుగొనబడలేదు",
-    "adjust_search": "మీ శోధన లేదా ఫిల్టర్లను సర్దుబాటు చేయడానికి ప్రయత్నించండి"
+    "adjust_search": "మీ శోధన లేదా ఫిల్టర్లను సర్దుబాటు చేయడానికి ప్రయత్నించండి",
+    
+    // Additional keys needed for settings
+    "permission_granted": "అనుమతి ఇవ్వబడింది",
+    "permission_disabled": "అనుమతి నిలిపివేయబడింది",
+    "permission_has_been": "అనుమతి",
+    "enabled": "ఎనేబుల్ చేయబడింది",
+    "disabled": "డిసేబుల్ చేయబడింది",
+    "sync_started": "సింక్ ప్రారంభించబడింది",
+    "database_updated": "డేటాబేస్ అప్డేట్ చేయబడింది",
+    "updated": "అప్డేట్ చేయబడింది"
   },
   
   tamil: {
@@ -652,11 +679,21 @@ export const translations: TranslationsType = {
     "this_week": "இந்த வாரம்",
     "this_month": "இந்த மாதம்",
     "all_time": "எல்லா நேரமும்",
-    "why_flagged": "இது ஏன் குறியிடப்பட்டது?",
     "detected_threat": "கண்டறியப்பட்ட அச்சுறுத்தல் சொற்கள்:",
     "unsafe": "பாதுகாப்பற்றது",
     "not_sure": "உறுதியாக தெரியவில்லை",
     "no_threats": "அச்சுறுத்தல்கள் எதுவும் கண்டுபிடிக்கப்படவில்லை",
-    "adjust_search": "உங்கள் தேடலை அல்லது வடிப்பான்களை சரிசெய்ய முயற்சிக்கவும்"
-  },
+    "adjust_search": "உங்கள் தேடலை அல்லது வடிப்பான்களை சரிசெய்ய முயற்சிக்கவும்",
+    
+    // Additional keys needed for settings
+    "permission_granted": "அனுமதி வழங்கப்பட்டது",
+    "permission_disabled": "அனுமதி முடக்கப்பட்டது",
+    "permission_has_been": "அனுமதி",
+    "enabled": "இயக்கப்பட்டது",
+    "disabled": "முடக்கப்பட்டது",
+    "sync_started": "ஒத்திசைவு தொடங்கியது",
+    "database_updated": "தரவுத்தளம் புதுப்பிக்கப்பட்டது",
+    "updated": "புதுப்பிக்கப்பட்டது"
+  }
 };
+
