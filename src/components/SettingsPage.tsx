@@ -20,7 +20,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 interface SettingsPageProps {
   darkMode: boolean;
@@ -28,8 +27,6 @@ interface SettingsPageProps {
 }
 
 const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
-  const { t, language, setLanguage } = useLanguage();
-  
   const [permissions, setPermissions] = useState({
     sms: true,
     calls: true,
@@ -40,6 +37,7 @@ const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
   const [backgroundSync, setBackgroundSync] = useState(true);
   const [localProcessing, setLocalProcessing] = useState(true);
   const [cloudBackup, setCloudBackup] = useState(false);
+  const [language, setLanguage] = useState("english");
   const [syncStatus, setSyncStatus] = useState({
     inProgress: false,
     progress: 0
@@ -87,8 +85,8 @@ const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
     });
   };
   
-  const handleLanguageChange = (lang: string) => {
-    setLanguage(lang as "en" | "hi" | "te");
+  const changeLanguage = (lang: string) => {
+    setLanguage(lang);
     
     toast("Language updated", {
       description: `App language has been changed to ${lang.charAt(0).toUpperCase() + lang.slice(1)}.`
@@ -129,16 +127,16 @@ const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
               <Lock className="h-5 w-5 text-primary" />
-              <span>{t("settings.permissions")}</span>
+              <span>App Permissions</span>
             </CardTitle>
             <CardDescription>
-              {t("settings.permissions.desc")}
+              Control what Shield Safe Zone can access
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <Label htmlFor="sms-permission" className="flex-1 cursor-pointer">
-                {t("settings.sms")}
+                SMS Access
               </Label>
               <Switch 
                 id="sms-permission" 
@@ -149,7 +147,7 @@ const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
             
             <div className="flex items-center justify-between">
               <Label htmlFor="calls-permission" className="flex-1 cursor-pointer">
-                {t("settings.calls")}
+                Call Access
               </Label>
               <Switch 
                 id="calls-permission" 
@@ -160,7 +158,7 @@ const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
             
             <div className="flex items-center justify-between">
               <Label htmlFor="contacts-permission" className="flex-1 cursor-pointer">
-                {t("settings.contacts")}
+                Contacts Access
               </Label>
               <Switch 
                 id="contacts-permission" 
@@ -171,7 +169,7 @@ const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
             
             <div className="flex items-center justify-between">
               <Label htmlFor="notifications-permission" className="flex-1 cursor-pointer">
-                {t("settings.notifications")}
+                Notifications
               </Label>
               <Switch 
                 id="notifications-permission" 
@@ -239,15 +237,15 @@ const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
               <Lock className="h-5 w-5 text-primary" />
-              <span>{t("settings.privacy")}</span>
+              <span>Privacy Settings</span>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <Label htmlFor="local-processing" className="flex-1">
-                <div>{t("settings.local")}</div>
+                <div>Local Processing</div>
                 <span className="text-xs text-muted-foreground">
-                  {t("settings.local.desc")}
+                  Process scam detection on device only
                 </span>
               </Label>
               <Switch 
@@ -259,9 +257,9 @@ const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
             
             <div className="flex items-center justify-between">
               <Label htmlFor="cloud-backup" className="flex-1">
-                <div>{t("settings.cloud")}</div>
+                <div>Cloud Backup</div>
                 <span className="text-xs text-muted-foreground">
-                  {t("settings.cloud.desc")}
+                  Backup settings and preferences
                 </span>
               </Label>
               <Switch 
@@ -282,15 +280,15 @@ const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
               ) : (
                 <Sun className="h-5 w-5 text-primary" />
               )}
-              <span>{t("settings.appearance")}</span>
+              <span>Appearance</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
               <Label htmlFor="theme-toggle" className="flex-1">
-                <div>{t("settings.darkMode")}</div>
+                <div>Dark Mode</div>
                 <span className="text-xs text-muted-foreground">
-                  {t("settings.darkMode.desc")}
+                  Switch between light and dark theme
                 </span>
               </Label>
               <Switch 
@@ -307,22 +305,26 @@ const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
               <Globe className="h-5 w-5 text-primary" />
-              <span>{t("settings.language")}</span>
+              <span>Language</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <RadioGroup value={language} onValueChange={handleLanguageChange}>
+            <RadioGroup value={language} onValueChange={changeLanguage}>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="en" id="english" />
-                <Label htmlFor="english">{t("settings.english")}</Label>
+                <RadioGroupItem value="english" id="english" />
+                <Label htmlFor="english">English</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="hi" id="hindi" />
-                <Label htmlFor="hindi">{t("settings.hindi")}</Label>
+                <RadioGroupItem value="hindi" id="hindi" />
+                <Label htmlFor="hindi">Hindi</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="te" id="telugu" />
-                <Label htmlFor="telugu">{t("settings.telugu")}</Label>
+                <RadioGroupItem value="tamil" id="tamil" />
+                <Label htmlFor="tamil">Tamil</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="telugu" id="telugu" />
+                <Label htmlFor="telugu">Telugu</Label>
               </div>
             </RadioGroup>
           </CardContent>
@@ -332,9 +334,9 @@ const SettingsPage = ({ darkMode, toggleDarkMode }: SettingsPageProps) => {
         <Card>
           <CardContent className="p-4 text-center text-sm text-muted-foreground">
             <div className="space-y-1">
-              <p>{t("app.name")}</p>
-              <p>{t("app.version")}</p>
-              <p>© 2025 {t("app.name")}</p>
+              <p>Shield Safe Zone</p>
+              <p>v1.0.0 Beta</p>
+              <p>© 2025 Shield Safe Zone</p>
             </div>
           </CardContent>
         </Card>
