@@ -8,12 +8,14 @@ import type { ProtectionStatus } from "./ScamShield";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type HomePageProps = {
   setProtectionStatus: (status: ProtectionStatus) => void;
 };
 
 const HomePage = ({ setProtectionStatus }: HomePageProps) => {
+  const { t } = useLanguage();
   const [scanning, setScanning] = useState(false);
   const [scanProgress, setScanProgress] = useState(0);
 
@@ -27,8 +29,8 @@ const HomePage = ({ setProtectionStatus }: HomePageProps) => {
         if (prev >= 100) {
           clearInterval(interval);
           setScanning(false);
-          toast.success("Quick scan completed!", {
-            description: "No threats detected, you're safe!"
+          toast.success(t("quick_scan_completed"), {
+            description: t("no_threats_detected")
           });
           return 100;
         }
@@ -38,9 +40,9 @@ const HomePage = ({ setProtectionStatus }: HomePageProps) => {
   };
   
   const statCards = [
-    { title: "SMS Protected", value: 12, icon: <AlertCircle className="h-5 w-5 text-amber-500" /> },
-    { title: "Calls Screened", value: 8, icon: <AlertCircle className="h-5 w-5 text-amber-500" /> },
-    { title: "Security Level", value: "High", icon: <Shield className="h-5 w-5 text-green-500" /> }
+    { title: t("sms_protected"), value: 12, icon: <AlertCircle className="h-5 w-5 text-amber-500" /> },
+    { title: t("calls_screened"), value: 8, icon: <AlertCircle className="h-5 w-5 text-amber-500" /> },
+    { title: t("security_level"), value: t("high"), icon: <Shield className="h-5 w-5 text-green-500" /> }
   ];
 
   return (
@@ -52,10 +54,10 @@ const HomePage = ({ setProtectionStatus }: HomePageProps) => {
             <CardTitle className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Shield className="h-6 w-6 text-green-600 dark:text-green-400" />
-                <span>Protected</span>
+                <span>{t("protected")}</span>
               </div>
               <span className="text-sm font-normal text-green-600 dark:text-green-400">
-                All systems active
+                {t("all_systems_active")}
               </span>
             </CardTitle>
           </CardHeader>
@@ -70,7 +72,7 @@ const HomePage = ({ setProtectionStatus }: HomePageProps) => {
             className="h-20 w-20 rounded-full shadow-lg bg-primary hover:bg-primary/90 text-white flex flex-col items-center justify-center gap-1"
           >
             <Search className={`h-7 w-7 ${scanning ? 'animate-pulse' : ''}`} />
-            <span className="text-xs">Quick Scan</span>
+            <span className="text-xs">{t("quick_scan")}</span>
           </Button>
         </div>
         
@@ -78,7 +80,7 @@ const HomePage = ({ setProtectionStatus }: HomePageProps) => {
           <div className="space-y-2">
             <Progress value={scanProgress} className="w-full" />
             <p className="text-center text-sm text-muted-foreground">
-              Scanning for threats... {scanProgress}%
+              {t("scanning_for_threats")} {scanProgress}%
             </p>
           </div>
         )}
@@ -106,8 +108,8 @@ const HomePage = ({ setProtectionStatus }: HomePageProps) => {
                 <div className="flex items-center gap-3">
                   <Shield className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                   <div>
-                    <h3 className="font-medium">Full System Scan</h3>
-                    <p className="text-xs text-muted-foreground">Check all apps & messages</p>
+                    <h3 className="font-medium">{t("full_system_scan")}</h3>
+                    <p className="text-xs text-muted-foreground">{t("check_all_apps_messages")}</p>
                   </div>
                 </div>
                 <Button size="sm" variant="ghost">
@@ -124,8 +126,8 @@ const HomePage = ({ setProtectionStatus }: HomePageProps) => {
                   <div className="flex items-center gap-3">
                     <History className="h-6 w-6 text-amber-600 dark:text-amber-400" />
                     <div>
-                      <h3 className="font-medium">Threat History</h3>
-                      <p className="text-xs text-muted-foreground">View detected scam attempts</p>
+                      <h3 className="font-medium">{t("threat_history")}</h3>
+                      <p className="text-xs text-muted-foreground">{t("view_detected_scam_attempts")}</p>
                     </div>
                   </div>
                   <Button size="sm" variant="ghost">
@@ -142,8 +144,8 @@ const HomePage = ({ setProtectionStatus }: HomePageProps) => {
                 <div className="flex items-center gap-3">
                   <BookOpen className="h-6 w-6 text-green-600 dark:text-green-400" />
                   <div>
-                    <h3 className="font-medium">Stay Safe</h3>
-                    <p className="text-xs text-muted-foreground">Learn how to avoid scams</p>
+                    <h3 className="font-medium">{t("stay_safe")}</h3>
+                    <p className="text-xs text-muted-foreground">{t("learn_how_to_avoid_scams")}</p>
                   </div>
                 </div>
                 <Button size="sm" variant="ghost">

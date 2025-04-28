@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type CallStatus = "safe" | "suspicious" | "blocked";
 
@@ -24,6 +25,7 @@ interface CallRecord {
 }
 
 const CallScamMonitoring = () => {
+  const { t } = useLanguage();
   const [isProtectionActive, setIsProtectionActive] = useState(true);
   const [vibrationLevel, setVibrationLevel] = useState("medium");
   const [callRecords, setCallRecords] = useState<CallRecord[]>([
@@ -106,20 +108,20 @@ const CallScamMonitoring = () => {
   const toggleProtection = () => {
     setIsProtectionActive(!isProtectionActive);
     if (!isProtectionActive) {
-      toast.success("Call Protection Activated", {
-        description: "You'll now be protected from scam calls."
+      toast.success(t("call_protection_activated"), {
+        description: t("protected_from_scam_calls")
       });
     } else {
-      toast.error("Call Protection Deactivated", {
-        description: "Warning: You won't be protected from scam calls."
+      toast.error(t("call_protection_deactivated"), {
+        description: t("warning_no_protection")
       });
     }
   };
 
   const handleChangeVibration = (value: string) => {
     setVibrationLevel(value);
-    toast.success("Vibration alert updated", {
-      description: `Vibration level set to ${value}.`
+    toast.success(t("vibration_updated"), {
+      description: `${t("vibration_level_set")} ${t(value)}.`
     });
   };
 
@@ -137,11 +139,11 @@ const CallScamMonitoring = () => {
   const getStatusBadge = (status: CallStatus) => {
     switch(status) {
       case "safe":
-        return <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">Safe</Badge>;
+        return <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">{t("safe")}</Badge>;
       case "suspicious":
-        return <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">Suspicious</Badge>;
+        return <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">{t("suspicious")}</Badge>;
       case "blocked":
-        return <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">Blocked</Badge>;
+        return <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">{t("blocked")}</Badge>;
     }
   };
 
@@ -154,7 +156,7 @@ const CallScamMonitoring = () => {
             <CardTitle className="flex justify-between items-center">
               <div className="flex items-center gap-2">
                 <Phone className="h-5 w-5 text-primary" />
-                <span>Call Monitoring</span>
+                <span>{t("call_monitoring")}</span>
               </div>
               <Switch 
                 checked={isProtectionActive} 
@@ -165,15 +167,15 @@ const CallScamMonitoring = () => {
           <CardContent>
             <p className="text-sm text-muted-foreground">
               {isProtectionActive 
-                ? "Call monitoring is active. We'll analyze incoming calls for potential scams and provide real-time warnings." 
-                : "Call monitoring is disabled. Enable it to receive warnings about suspicious calls."}
+                ? t("call_monitoring_active")
+                : t("call_monitoring_inactive")}
             </p>
             {isProtectionActive && (
               <div className="mt-4 p-2 bg-green-50 dark:bg-green-900/20 rounded-md">
                 <div className="flex items-center gap-2">
                   <Shield className="h-4 w-4 text-green-600" />
                   <p className="text-xs text-green-700 dark:text-green-400">
-                    Monitored: <span className="font-medium">12 calls</span> analyzed in the last 7 days
+                    {t("monitored")}: <span className="font-medium">12</span> {t("calls_analyzed")}
                   </p>
                 </div>
               </div>
@@ -186,30 +188,30 @@ const CallScamMonitoring = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
               <Settings className="h-5 w-5 text-primary" />
-              <span>Alert Settings</span>
+              <span>{t("alert_settings")}</span>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              Choose how you want to be alerted when a suspicious call is detected
+              {t("choose_alerts")}
             </p>
             
             <RadioGroup value={vibrationLevel} onValueChange={handleChangeVibration}>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="low" id="r1" />
-                <Label htmlFor="r1" className="cursor-pointer">Low (gentle pulse)</Label>
+                <Label htmlFor="r1" className="cursor-pointer">{t("low_gentle")}</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="medium" id="r2" />
-                <Label htmlFor="r2" className="cursor-pointer">Medium (standard vibration)</Label>
+                <Label htmlFor="r2" className="cursor-pointer">{t("medium_standard")}</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="high" id="r3" />
-                <Label htmlFor="r3" className="cursor-pointer">High (strong alert)</Label>
+                <Label htmlFor="r3" className="cursor-pointer">{t("high_strong")}</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="off" id="r4" />
-                <Label htmlFor="r4" className="cursor-pointer">Off (visual alert only)</Label>
+                <Label htmlFor="r4" className="cursor-pointer">{t("off_visual")}</Label>
               </div>
             </RadioGroup>
           </CardContent>
@@ -219,7 +221,7 @@ const CallScamMonitoring = () => {
         <div className="space-y-2">
           <h2 className="text-lg font-medium flex items-center gap-2">
             <Phone className="h-5 w-5 text-primary" />
-            <span>Call Monitoring History</span>
+            <span>{t("call_monitoring_history")}</span>
             <Badge variant="secondary" className="ml-2">{callRecords.length}</Badge>
           </h2>
           
@@ -244,7 +246,7 @@ const CallScamMonitoring = () => {
                   
                   {call.status !== "blocked" && call.duration && (
                     <p className="text-xs text-muted-foreground">
-                      Duration: {call.duration}
+                      {t("duration")}: {call.duration}
                     </p>
                   )}
                   
@@ -253,7 +255,7 @@ const CallScamMonitoring = () => {
                       <Accordion type="single" collapsible className="w-full">
                         <AccordionItem value="item-1" className="border-none">
                           <AccordionTrigger className="py-1 text-xs text-amber-700 dark:text-amber-400 hover:no-underline">
-                            Why was this call flagged?
+                            {t("why_flagged")}
                           </AccordionTrigger>
                           <AccordionContent>
                             {call.reasons && (
@@ -270,7 +272,7 @@ const CallScamMonitoring = () => {
                             {call.detectedWords && (
                               <div className="mt-2">
                                 <p className="text-xs font-medium text-amber-700 dark:text-amber-400">
-                                  Detected suspicious words:
+                                  {t("detected_words")}:
                                 </p>
                                 <div className="flex flex-wrap gap-1 mt-1">
                                   {call.detectedWords.map((word, idx) => (
