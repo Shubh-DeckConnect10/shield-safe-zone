@@ -1,91 +1,113 @@
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
-type Language = 'en' | 'hi' | 'te';
+// Define all supported languages
+type SupportedLanguage = "en" | "hi" | "te";
 
+// Define the context type
 interface LanguageContextType {
-  language: Language;
-  setLanguage: (language: Language) => void;
+  language: SupportedLanguage;
+  setLanguage: (language: SupportedLanguage) => void;
   t: (key: string) => string;
 }
 
-// Create context with default values
-const LanguageContext = createContext<LanguageContextType>({
-  language: 'en',
-  setLanguage: () => {},
-  t: () => '',
-});
-
-// Translations for all UI text
-const translations: Record<Language, Record<string, string>> = {
+// Translation dictionary
+const translations: Record<SupportedLanguage, Record<string, string>> = {
   en: {
-    // App-wide
+    // App general
     "app.name": "Shield Safe Zone",
-    "app.version": "Version 1.0.0 Beta",
-    "app.tagline": "Your trusted guardian against digital scams and fraud",
-    "app.loading": "Loading...",
+    "app.version": "v1.0.0 Beta",
+    "app.tagline": "Your personal shield against digital scams",
+    "app.loading": "Setting up your protection...",
     
-    // Navigation & Menu
+    // Actions
+    "action.back": "Go back to home",
+    "action.scan": "Scan now",
+    "action.read": "Read more",
+    "action.submit": "Submit",
+    "action.cancel": "Cancel",
+    "action.next": "Next",
+    "action.prev": "Previous",
+    
+    // Menu items
     "menu.home": "Home",
-    "menu.sms": "SMS Detection",
-    "menu.call": "Call Monitoring",
+    "menu.sms": "SMS Protection",
+    "menu.call": "Call Protection",
     "menu.history": "Threat History",
     "menu.education": "Scam Education",
     "menu.emergency": "Emergency Help",
     "menu.settings": "Settings",
-    "menu.about": "About/Help",
+    "menu.about": "About & Help",
     
-    // Home Page
-    "home.protection.status": "Protected",
-    "home.protection.message": "All systems active",
-    "home.scan.button": "Quick Scan",
-    "home.scan.progress": "Scanning for threats...",
-    "home.stats.sms": "SMS Protected",
-    "home.stats.calls": "Calls Screened",
-    "home.stats.security": "Security Level",
+    // Home page
+    "home.protection.status": "Protection Status",
+    "home.protection.message": "Active & Protected",
+    "home.scan.button": "Scan",
+    "home.scan.progress": "Scanning your device",
+    "home.stats.sms": "SMS Threats",
+    "home.stats.calls": "Call Threats",
+    "home.stats.security": "Security",
     "home.security.high": "High",
-    "home.fullscan": "Full System Scan",
-    "home.fullscan.desc": "Check all apps & messages",
+    "home.security.medium": "Medium",
+    "home.security.low": "Low",
+    "home.fullscan": "Run Full Scan",
+    "home.fullscan.desc": "Deep scan system for threats",
     "home.threat": "Threat History",
-    "home.threat.desc": "View detected scam attempts",
-    "home.safety": "Stay Safe",
-    "home.safety.desc": "Learn how to avoid scams",
+    "home.threat.desc": "View detected threats",
+    "home.safety": "Safety Tips",
+    "home.safety.desc": "Learn to stay protected",
     
-    // Success Messages
-    "success.scan": "Quick scan completed!",
-    "success.scan.desc": "No threats detected, you're safe!",
-    "success.shield": "Shield Safe Zone activated!",
-    "success.shield.desc": "You're now protected from scams.",
-    "success.setup": "Setup completed!",
-    "success.setup.desc": "You're now protected against scams.",
-    "success.support": "Support ticket created",
-    "success.support.desc": "Our team will get back to you within 24 hours.",
+    // Settings
+    "settings.language": "Language",
+    "settings.language.desc": "Change application language",
+    "settings.english": "English",
+    "settings.hindi": "Hindi",
+    "settings.telugu": "Telugu",
+    "settings.darkMode": "Dark Mode",
+    "settings.darkMode.desc": "Switch between light and dark theme",
+    "settings.notifications": "Notifications",
+    "settings.notifications.desc": "Control app alerts",
+    "settings.privacy": "Privacy Settings",
+    "settings.privacy.desc": "Manage data protection",
+    "settings.local": "Local Processing",
+    "settings.local.desc": "Process data on device",
+    "settings.cloud": "Cloud Backup",
+    "settings.cloud.desc": "Backup data to cloud",
+    "settings.appearance": "Appearance",
+    "settings.permissions": "App Permissions",
+    "settings.permissions.desc": "Control what Shield Safe Zone can access",
+    "settings.sms": "SMS Access",
+    "settings.calls": "Call Access",
+    "settings.contacts": "Contacts Access",
     
-    // SMS Scam Detection Page
-    "sms.title": "SMS Monitoring",
-    "sms.active": "SMS monitoring is active. We'll analyze your messages for potential scams and provide real-time warnings.",
-    "sms.inactive": "SMS monitoring is disabled. Enable it to protect yourself from scam messages.",
-    "sms.monitored": "Monitored:",
-    "sms.messages": "messages",
-    "sms.filter": "Filter Level",
-    "sms.filter.low": "Low (only obvious scams)",
-    "sms.filter.medium": "Medium (recommended)",
-    "sms.filter.high": "High (maximum protection)",
-    "sms.history": "Recent Messages",
-    "sms.safe": "Safe",
-    "sms.suspicious": "Suspicious",
-    "sms.blocked": "Blocked",
-    "sms.flagged": "Why was this message flagged?",
-    "sms.words": "Detected suspicious words:",
+    // About & Help
+    "about.faq": "Frequently Asked Questions",
+    "about.help": "Get Support",
+    "about.chat": "Chat with Support",
+    "about.email": "Email Support",
+    "about.call": "Call Support",
+    "about.learn": "Learn More",
+    "about.privacy": "Privacy Policy",
+    "about.terms": "Terms of Service",
+    "about.rights": "All Rights Reserved",
+
+    // Emergency
+    "emergency.title": "Emergency Assistance",
+    "emergency.button": "Send Emergency Alert",
+    "emergency.contacts": "Trusted Contacts",
+    "emergency.add": "Add Contact",
+    "emergency.silent": "Silent Emergency Mode",
+    "emergency.silent.desc": "Send alerts without sound or vibration",
+    "emergency.templates": "Emergency Message Templates",
     
-    // Call Protection Page
-    "call.title": "Call Monitoring",
+    // Call Monitoring
+    "call.monitoring": "Call Monitoring",
     "call.active": "Call monitoring is active. We'll analyze incoming calls for potential scams and provide real-time warnings.",
     "call.inactive": "Call monitoring is disabled. Enable it to receive warnings about suspicious calls.",
     "call.monitored": "Monitored:",
-    "call.calls": "calls",
-    "call.alert": "Alert Settings",
-    "call.alert.desc": "Choose how you want to be alerted when a suspicious call is detected",
+    "call.calls": "calls analyzed in the last 7 days",
+    "call.settings": "Alert Settings",
+    "call.settings.desc": "Choose how you want to be alerted when a suspicious call is detected",
     "call.vibration.low": "Low (gentle pulse)",
     "call.vibration.medium": "Medium (standard vibration)",
     "call.vibration.high": "High (strong alert)",
@@ -95,650 +117,491 @@ const translations: Record<Language, Record<string, string>> = {
     "call.flagged": "Why was this call flagged?",
     "call.words": "Detected suspicious words:",
     
-    // Education Hub
-    "edu.title": "Your Learning Progress",
-    "edu.articles": "Articles Read",
-    "edu.scam": "Scam Education Articles",
-    "edu.read": "Read",
-    "edu.readnow": "Read Now",
-    "edu.quiz.title": "Test Your Knowledge",
-    "edu.quiz.desc": "Take a quick quiz to test your scam awareness",
-    "edu.quiz.start": "Start Quiz",
-    "edu.badges": "Your Badges",
-    "edu.whatsapp.title": "Stay Updated on WhatsApp",
-    "edu.whatsapp.desc": "Receive regular scam alerts and tips directly on WhatsApp",
-    "edu.whatsapp.enroll": "Enroll for WhatsApp Updates",
+    // Status labels
+    "status.safe": "Safe",
+    "status.suspicious": "Suspicious",
+    "status.blocked": "Blocked",
     
-    // Emergency Page
-    "emergency.title": "Emergency Assistance",
-    "emergency.button.desc": "Press the button to send emergency alerts to your trusted contacts",
-    "emergency.silent": "Silent Emergency Mode",
-    "emergency.silent.desc": "Send alerts without sound or vibration",
-    "emergency.contacts": "Trusted Contacts",
-    "emergency.contacts.add": "Add",
-    "emergency.contacts.none": "No Contacts Yet",
-    "emergency.contacts.none.desc": "Add trusted contacts who can help in emergency situations.",
-    "emergency.contacts.add.full": "Add Emergency Contact",
-    "emergency.contacts.add.more": "Add More Contacts",
-    "emergency.templates": "Emergency Message Templates",
-    "emergency.template.scam": "Scam Alert",
-    "emergency.template.scam.text": "I'm being targeted by a scammer. Please call me immediately to help verify if this is legitimate.",
-    "emergency.template.help": "Help Needed",
-    "emergency.template.help.text": "I need urgent assistance. Please call me or contact authorities. My last known location is attached.",
+    // Education
+    "education.progress": "Your Learning Progress",
+    "education.articles": "Scam Education Articles",
+    "education.read": "Read",
+    "education.readNow": "Read Now",
+    "education.test": "Test Your Knowledge",
+    "education.quiz": "Take a quick quiz to test your scam awareness",
+    "education.start": "Start Quiz",
+    "education.badges": "Your Badges",
+    "education.whatsapp": "Stay Updated on WhatsApp",
+    "education.whatsapp.desc": "Receive regular scam alerts and tips directly on WhatsApp",
+    "education.enroll": "Enroll for WhatsApp Updates",
     
-    // Settings Page
-    "settings.appearance": "Appearance",
-    "settings.dark": "Dark Mode",
-    "settings.dark.desc": "Use dark theme for the app",
-    "settings.notifications": "Notifications",
-    "settings.notify.scam": "Scam Alerts",
-    "settings.notify.scam.desc": "Get notified about potential threats",
-    "settings.notify.updates": "App Updates",
-    "settings.notify.updates.desc": "Be notified when updates are available",
-    "settings.language": "Language",
-    "settings.language.desc": "Choose your preferred language",
-    "settings.english": "English",
-    "settings.hindi": "Hindi",
-    "settings.telugu": "Telugu",
-    "settings.privacy": "Privacy",
-    "settings.privacy.local": "Local Processing",
-    "settings.privacy.local.desc": "Process data on-device when possible",
-    "settings.privacy.analytics": "Share Analytics",
-    "settings.privacy.analytics.desc": "Help improve the app with anonymous data",
-    "settings.advanced": "Advanced Settings",
-    "settings.advanced.desc": "Configure advanced security options",
+    // Success messages
+    "success.shield": "Protection Active",
+    "success.shield.desc": "You're protected from scams and fraud attempts.",
+    "success.scan": "Scan Complete",
+    "success.scan.desc": "No threats detected on your device.",
+    "success.setup": "Setup Complete",
+    "success.setup.desc": "Your Shield Safe Zone is now configured.",
+    "success.support": "Support Request Sent",
+    "success.support.desc": "Our team will get back to you shortly.",
     
-    // About/Help Page
-    "about.faq": "Frequently Asked Questions",
-    "about.help": "Need Help?",
-    "about.chat": "Chat with Support",
-    "about.email": "Email Support",
-    "about.call": "Call Support",
-    "about.learn": "Learn More",
-    "about.privacy": "Privacy Policy",
-    "about.terms": "Terms of Service",
-    "about.rights": "All Rights Reserved",
+    // Toast messages
+    "toast.setup.skip": "Setup Skipped",
+    "toast.setup.skip.desc": "You can configure settings later.",
     
-    // Threat History Page
-    "history.title": "Threat History",
-    "history.desc": "Review detected scams and threats",
-    "history.empty": "No threats detected yet",
-    "history.empty.desc": "You're protected and no scams have been detected so far.",
-    "history.filter": "Filter Threats",
-    "history.filter.all": "All Threats",
-    "history.filter.sms": "SMS Threats",
-    "history.filter.call": "Call Threats",
-    "history.date": "Date",
-    "history.type": "Type",
-    "history.status": "Status",
-    "history.details": "View Details",
-    "history.reported": "Reported",
-    "history.blocked": "Blocked",
-    
-    // Setup Wizard
-    "setup.welcome": "Welcome to Shield Safe Zone",
-    "setup.desc": "Let's set up your scam protection",
-    "setup.step": "Step",
-    "setup.of": "of",
-    "setup.permissions": "Required Permissions",
-    "setup.permissions.desc": "These permissions are needed to protect you against scams",
+    // Setup wizard
+    "setup.intro.title": "Welcome to Shield Safe Zone",
+    "setup.intro.desc": "Your protection against scams starts here. Let's set up your app for maximum security.",
+    "setup.intro.protection": "Real-time protection",
+    "setup.intro.protection.desc": "Monitors calls and messages",
+    "setup.intro.alerts": "Instant alerts",
+    "setup.intro.alerts.desc": "Get notified about potential scams",
+    "setup.intro.education": "Scam education",
+    "setup.intro.education.desc": "Learn about common scam techniques",
+    "setup.permissions.title": "Required Permissions",
+    "setup.permissions.desc": "Shield Safe Zone needs access to certain features to protect you",
+    "setup.permissions.sms": "SMS Access",
+    "setup.permissions.sms.desc": "For monitoring suspicious messages",
+    "setup.permissions.calls": "Call Access",
+    "setup.permissions.calls.desc": "For monitoring suspicious calls",
+    "setup.permissions.grant": "Grant",
+    "setup.notifications.title": "Enable Notifications",
+    "setup.notifications.desc": "Get instant alerts when potential scams are detected",
+    "setup.notifications.push": "Push Notifications",
+    "setup.notifications.push.desc": "For real-time scam alerts",
+    "setup.notifications.enable": "Enable",
+    "setup.notifications.later": "You can always change notification settings later",
+    "setup.emergency.title": "Emergency Contacts",
+    "setup.emergency.desc": "Add trusted contacts for emergency assistance",
+    "setup.emergency.alert": "In case you fall for a scam, we can alert your trusted contacts immediately",
+    "setup.emergency.setup": "Set Up Emergency Contacts",
+    "setup.emergency.skip": "You can skip this step and set up emergency contacts later",
+    "setup.done.title": "Setup Complete!",
+    "setup.done.desc": "You're now protected against scams. You can always adjust your settings later.",
+    "setup.done.next": "What's next?",
+    "setup.done.protection": "Your protection is now active",
+    "setup.done.sms": "SMS scam monitoring is enabled",
+    "setup.done.calls": "Call monitoring is ready",
+    "setup.skip": "Skip setup",
+    "setup.back": "Back",
     "setup.next": "Next",
-    "setup.skip": "Skip",
-    "setup.complete": "Complete Setup",
+    "setup.finish": "Finish",
     
-    // Dialog & Form Labels
-    "dialog.add": "Add Contact",
-    "dialog.name": "Name",
-    "dialog.phone": "Phone Number",
-    "dialog.relation": "Relation",
-    "dialog.cancel": "Cancel",
-    "dialog.add.action": "Add Contact",
-    
-    // Common Actions
-    "action.view": "View",
-    "action.edit": "Edit",
-    "action.delete": "Delete",
-    "action.cancel": "Cancel",
-    "action.save": "Save",
-    "action.confirm": "Confirm",
-    "action.continue": "Continue",
-    "action.skip": "Skip",
-    "action.back": "Back",
-    
-    // Common Status Labels
-    "status.protected": "Protected",
-    "status.at.risk": "At Risk",
-    "status.critical": "Critical",
-    "status.analyzing": "Analyzing",
-    "status.detected": "Detected",
-    
-    // Toast Messages
-    "toast.language": "Language changed",
-    "toast.protection.on": "Protection activated",
-    "toast.protection.off": "Protection deactivated",
-    "toast.setup.skip": "Setup skipped",
-    "toast.setup.skip.desc": "You can complete setup later in Settings.",
-    "toast.contact.add": "Contact added",
-    "toast.contact.add.desc": "has been added as an emergency contact.",
-    "toast.contact.remove": "Contact removed",
-    "toast.contact.remove.desc": "has been removed from emergency contacts.",
-    "toast.alert.sent": "Emergency alert sent",
-    "toast.alert.sent.desc": "Your trusted contacts have been notified of your situation.",
-    "toast.silent.on": "Silent mode enabled",
-    "toast.silent.on.desc": "Emergency alerts will be sent silently.",
-    "toast.silent.off": "Silent mode disabled",
-    "toast.silent.off.desc": "Emergency alerts will make sound notifications.",
-    "toast.article": "Article marked as read",
-    "toast.article.desc": "Great job learning about",
-    "toast.badge": "Badge Earned!",
-    "toast.badge.desc": "You've earned the Scam Spotter badge!",
-    "toast.quiz": "Quiz Starting",
-    "toast.quiz.desc": "Get ready to test your scam awareness knowledge!",
-    
-    // Common Words
-    "common.today": "Today",
-    "common.yesterday": "Yesterday",
-    "common.day.ago": "days ago",
-    "common.family": "Family",
-    "common.friend": "Friend",
-    "common.other": "Other",
-    "common.safe": "Safe",
-    "common.suspicious": "Suspicious",
-    "common.blocked": "Blocked",
-    "common.scams": "scams",
+    // FAQ questions
+    "faq.question.1": "How does Shield Safe Zone detect scams?",
+    "faq.answer.1": "Shield Safe Zone uses advanced pattern recognition and machine learning to identify common scam patterns in SMS messages and calls. It compares incoming communications against a database of known scam patterns, which is regularly updated to protect against new threats.",
+    "faq.question.2": "Will the app access my personal messages?",
+    "faq.answer.2": "Shield Safe Zone only scans messages for potential scam patterns and does not store or share the content of your personal messages. You can choose local-only processing in settings for enhanced privacy.",
+    "faq.question.3": "How accurate is scam detection?",
+    "faq.answer.3": "Our detection system has a high accuracy rate of over 95%. However, no system is perfect, which is why we allow you to mark safe messages that might be incorrectly flagged. This feedback improves our detection algorithms over time.",
+    "faq.question.4": "What should I do if I receive a scam?",
+    "faq.answer.4": "If you receive a scam message or call, use the app to report it. Avoid clicking on any links or calling back suspicious numbers. If you've already interacted with a scammer, contact your bank immediately and change any compromised passwords.",
+    "faq.question.5": "Does Shield Safe Zone work offline?",
+    "faq.answer.5": "Basic scam detection works offline using the latest downloaded scam patterns. However, for the most up-to-date protection, we recommend regular internet connection to update the scam database."
   },
-  
-  // Hindi translations
   hi: {
-    // App-wide
+    // App general
     "app.name": "शील्ड सेफ जोन",
-    "app.version": "संस्करण 1.0.0 बीटा",
-    "app.tagline": "डिजिटल धोखाधड़ी से आपका विश्वसनीय रक्षक",
-    "app.loading": "लोड हो रहा है...",
+    "app.version": "v1.0.0 बीटा",
+    "app.tagline": "डिजिटल घोटालों के खिलाफ आपका व्यक्तिगत कवच",
+    "app.loading": "आपकी सुरक्षा सेट हो रही है...",
     
-    // Navigation & Menu
+    // Actions
+    "action.back": "होम पेज पर वापस जाएं",
+    "action.scan": "अभी स्कैन करें",
+    "action.read": "और पढ़ें",
+    "action.submit": "जमा करें",
+    "action.cancel": "रद्द करें",
+    "action.next": "अगला",
+    "action.prev": "पिछला",
+    
+    // Menu items
     "menu.home": "होम",
-    "menu.sms": "एसएमएस जांच",
-    "menu.call": "कॉल मॉनिटरिंग",
-    "menu.history": "धोखाधड़ी इतिहास",
+    "menu.sms": "एसएमएस सुरक्षा",
+    "menu.call": "कॉल सुरक्षा",
+    "menu.history": "खतरा इतिहास",
     "menu.education": "धोखाधड़ी शिक्षा",
     "menu.emergency": "आपातकालीन सहायता",
     "menu.settings": "सेटिंग्स",
-    "menu.about": "जानकारी/सहायता",
+    "menu.about": "जानकारी और मदद",
     
-    // Home Page
-    "home.protection.status": "सुरक्षित",
-    "home.protection.message": "सभी सिस्टम सक्रिय",
-    "home.scan.button": "त्वरित स्कैन",
-    "home.scan.progress": "खतरों के लिए स्कैन कर रहा है...",
-    "home.stats.sms": "एसएमएस सुरक्षित",
-    "home.stats.calls": "कॉल स्क्रीन किए",
-    "home.stats.security": "सुरक्षा स्तर",
+    // Home page
+    "home.protection.status": "सुरक्षा स्थिति",
+    "home.protection.message": "सक्रिय और सुरक्षित",
+    "home.scan.button": "स्कैन",
+    "home.scan.progress": "आपका डिवाइस स्कैन हो रहा है",
+    "home.stats.sms": "एसएमएस खतरे",
+    "home.stats.calls": "कॉल खतरे",
+    "home.stats.security": "सुरक्षा",
     "home.security.high": "उच्च",
-    "home.fullscan": "पूर्ण सिस्टम स्कैन",
-    "home.fullscan.desc": "सभी ऐप और संदेश जांचें",
-    "home.threat": "धोखाधड़ी इतिहास",
-    "home.threat.desc": "पहचानी गई धोखाधड़ी देखें",
-    "home.safety": "सुरक्षित रहें",
-    "home.safety.desc": "धोखाधड़ी से बचने के तरीके सीखें",
+    "home.security.medium": "मध्यम",
+    "home.security.low": "निम्न",
+    "home.fullscan": "पूर्ण स्कैन चलाएं",
+    "home.fullscan.desc": "खतरों के लिए गहरा स्कैन करें",
+    "home.threat": "खतरा इतिहास",
+    "home.threat.desc": "पहचाने गए खतरों को देखें",
+    "home.safety": "सुरक्षा टिप्स",
+    "home.safety.desc": "सुरक्षित रहना सीखें",
     
-    // Success Messages
-    "success.scan": "त्वरित स्कैन पूरा हुआ!",
-    "success.scan.desc": "कोई खतरा नहीं मिला, आप सुरक्षित हैं!",
-    "success.shield": "शील्ड सेफ जोन सक्रिय!",
-    "success.shield.desc": "अब आप धोखाधड़ी से सुरक्षित हैं।",
-    "success.setup": "सेटअप पूरा हुआ!",
-    "success.setup.desc": "अब आप धोखाधड़ी से सुरक्षित हैं।",
-    "success.support": "सहायता टिकट बनाया गया",
-    "success.support.desc": "हमारी टीम 24 घंटे के भीतर आपसे संपर्क करेगी।",
-    
-    // SMS Scam Detection Page
-    "sms.title": "एसएमएस मॉनिटरिंग",
-    "sms.active": "एसएमएस मॉनिटरिंग सक्रिय है। हम संभावित धोखाधड़ी के लिए आपके संदेशों का विश्लेषण करेंगे और वास्तविक समय में चेतावनी प्रदान करेंगे।",
-    "sms.inactive": "एसएमएस मॉनिटरिंग अक्षम है। धोखाधड़ी संदेशों से खुद को बचाने के लिए इसे सक्रिय करें।",
-    "sms.monitored": "मॉनिटर किए गए:",
-    "sms.messages": "संदेश",
-    "sms.filter": "फिल्टर स्तर",
-    "sms.filter.low": "निम्न (केवल स्पष्ट धोखाधड़ी)",
-    "sms.filter.medium": "मध्यम (अनुशंसित)",
-    "sms.filter.high": "उच्च (अधिकतम सुरक्षा)",
-    "sms.history": "हाल के संदेश",
-    "sms.safe": "सुरक्षित",
-    "sms.suspicious": "संदिग्ध",
-    "sms.blocked": "अवरुद्ध",
-    "sms.flagged": "यह संदेश क्यों फ्लैग किया गया?",
-    "sms.words": "संदिग्ध शब्द पहचाने गए:",
-    
-    // Call Protection Page
-    "call.title": "कॉल मॉनिटरिंग",
-    "call.active": "कॉल मॉनिटरिंग सक्रिय है। हम संभावित धोखाधड़ी के लिए आने वाले कॉल का विश्लेषण करेंगे और वास्तविक समय में चेतावनी प्रदान करेंगे।",
-    "call.inactive": "कॉल मॉनिटरिंग अक्षम है। संदिग्ध कॉल के बारे में चेतावनी प्राप्त करने के लिए इसे सक्रिय करें।",
-    "call.monitored": "मॉनिटर किए गए:",
-    "call.calls": "कॉल",
-    "call.alert": "अलर्ट सेटिंग्स",
-    "call.alert.desc": "संदिग्ध कॉल का पता चलने पर आप किस तरह से सूचित होना चाहते हैं",
-    "call.vibration.low": "निम्न (हल्का स्पंदन)",
-    "call.vibration.medium": "मध्यम (मानक कंपन)",
-    "call.vibration.high": "उच्च (मजबूत अलर्ट)",
-    "call.vibration.off": "बंद (केवल दृश्य अलर्ट)",
-    "call.history": "कॉल मॉनिटरिंग इतिहास",
-    "call.duration": "अवधि:",
-    "call.flagged": "यह कॉल क्यों फ्लैग किया गया?",
-    "call.words": "संदिग्ध शब्द पहचाने गए:",
-    
-    // Education Hub
-    "edu.title": "आपकी सीखने की प्रगति",
-    "edu.articles": "पढ़े गए लेख",
-    "edu.scam": "धोखाधड़ी शिक्षा लेख",
-    "edu.read": "पढ़ा गया",
-    "edu.readnow": "अभी पढ़ें",
-    "edu.quiz.title": "अपने ज्ञान का परीक्षण करें",
-    "edu.quiz.desc": "अपनी धोखाधड़ी जागरूकता का परीक्षण करने के लिए एक त्वरित प्रश्नोत्तरी लें",
-    "edu.quiz.start": "प्रश्नोत्तरी शुरू करें",
-    "edu.badges": "आपके बैज",
-    "edu.whatsapp.title": "व्हाट्सएप पर अपडेट रहें",
-    "edu.whatsapp.desc": "नियमित धोखाधड़ी अलर्ट और सुझाव सीधे व्हाट्सएप पर प्राप्त करें",
-    "edu.whatsapp.enroll": "व्हाट्सएप अपडेट के लिए नामांकन करें",
-    
-    // Emergency Page
-    "emergency.title": "आपातकालीन सहायता",
-    "emergency.button.desc": "अपने विश्वसनीय संपर्कों को आपातकालीन अलर्ट भेजने के लिए बटन दबाएं",
-    "emergency.silent": "शांत आपातकालीन मोड",
-    "emergency.silent.desc": "बिना ध्वनि या कंपन के अलर्ट भेजें",
-    "emergency.contacts": "विश्वसनीय संपर्क",
-    "emergency.contacts.add": "जोड़ें",
-    "emergency.contacts.none": "अभी तक कोई संपर्क नहीं",
-    "emergency.contacts.none.desc": "आपातकालीन स्थितियों में मदद कर सकने वाले विश्वसनीय संपर्क जोड़ें।",
-    "emergency.contacts.add.full": "आपातकालीन संपर्क जोड़ें",
-    "emergency.contacts.add.more": "अधिक संपर्क जोड़ें",
-    "emergency.templates": "आपातकालीन संदेश टेम्पलेट",
-    "emergency.template.scam": "धोखाधड़ी अलर्ट",
-    "emergency.template.scam.text": "मैं एक धोखेबाज द्वारा निशाना बनाया जा रहा हूं। कृपया यह सत्यापित करने में मदद के लिए मुझे तुरंत कॉल करें कि क्या यह वैध है।",
-    "emergency.template.help": "सहायता चाहिए",
-    "emergency.template.help.text": "मुझे तत्काल सहायता की आवश्यकता है। कृपया मुझे कॉल करें या अधिकारियों से संपर्क करें। मेरा अंतिम ज्ञात स्थान संलग्न है।",
-    
-    // Settings Page
-    "settings.appearance": "दिखावट",
-    "settings.dark": "डार्क मोड",
-    "settings.dark.desc": "ऐप के लिए डार्क थीम का उपयोग करें",
-    "settings.notifications": "सूचनाएँ",
-    "settings.notify.scam": "धोखाधड़ी अलर्ट",
-    "settings.notify.scam.desc": "संभावित खतरों के बारे में सूचित रहें",
-    "settings.notify.updates": "ऐप अपडेट",
-    "settings.notify.updates.desc": "जब अपडेट उपलब्ध हों तब सूचित करें",
+    // Settings
     "settings.language": "भाषा",
-    "settings.language.desc": "अपनी पसंदीदा भाषा चुनें",
+    "settings.language.desc": "एप्लिकेशन भाषा बदलें",
     "settings.english": "अंग्रेज़ी",
     "settings.hindi": "हिंदी",
     "settings.telugu": "तेलुगु",
-    "settings.privacy": "गोपनीयता",
-    "settings.privacy.local": "स्थानीय प्रसंस्करण",
-    "settings.privacy.local.desc": "जब संभव हो तब डेटा को डिवाइस पर ही संसाधित करें",
-    "settings.privacy.analytics": "विश्लेषण साझा करें",
-    "settings.privacy.analytics.desc": "गुमनाम डेटा के साथ ऐप में सुधार में मदद करें",
-    "settings.advanced": "उन्नत सेटिंग्स",
-    "settings.advanced.desc": "उन्नत सुरक्षा विकल्प कॉन्फ़िगर करें",
+    "settings.darkMode": "डार्क मोड",
+    "settings.darkMode.desc": "लाइट और डार्क थीम के बीच स्विच करें",
+    "settings.notifications": "सूचनाएं",
+    "settings.notifications.desc": "ऐप अलर्ट नियंत्रित करें",
+    "settings.privacy": "गोपनीयता सेटिंग्स",
+    "settings.privacy.desc": "डेटा सुरक्षा प्रबंधित करें",
+    "settings.local": "स्थानीय प्रोसेसिंग",
+    "settings.local.desc": "डिवाइस पर डेटा संसाधित करें",
+    "settings.cloud": "क्लाउड बैकअप",
+    "settings.cloud.desc": "क्लाउड पर डेटा बैकअप करें",
+    "settings.appearance": "दिखावट",
+    "settings.permissions": "ऐप अनुमतियां",
+    "settings.permissions.desc": "नियंत्रित करें कि शील्ड सेफ ज़ोन क्या एक्सेस कर सकता है",
+    "settings.sms": "एसएमएस एक्सेस",
+    "settings.calls": "कॉल एक्सेस",
+    "settings.contacts": "कॉन्टैक्ट्स एक्सेस",
     
-    // About/Help Page
+    // About & Help
     "about.faq": "अक्सर पूछे जाने वाले प्रश्न",
-    "about.help": "सहायता चाहिए?",
+    "about.help": "सहायता प्राप्त करें",
     "about.chat": "सपोर्ट से चैट करें",
     "about.email": "ईमेल सपोर्ट",
     "about.call": "कॉल सपोर्ट",
-    "about.learn": "अधिक जानें",
+    "about.learn": "और जानें",
     "about.privacy": "गोपनीयता नीति",
     "about.terms": "सेवा की शर्तें",
     "about.rights": "सर्वाधिकार सुरक्षित",
     
-    // Threat History Page
-    "history.title": "धोखाधड़ी इतिहास",
-    "history.desc": "पहचानी गई धोखाधड़ी और खतरों की समीक्षा करें",
-    "history.empty": "अभी तक कोई खतरा पहचाना नहीं गया",
-    "history.empty.desc": "आप सुरक्षित हैं और अब तक कोई धोखाधड़ी का पता नहीं चला है।",
-    "history.filter": "खतरे फ़िल्टर करें",
-    "history.filter.all": "सभी खतरे",
-    "history.filter.sms": "एसएमएस खतरे",
-    "history.filter.call": "कॉल खतरे",
-    "history.date": "तारीख",
-    "history.type": "प्रकार",
-    "history.status": "स्थिति",
-    "history.details": "विवरण देखें",
-    "history.reported": "रिपोर्ट किया गया",
-    "history.blocked": "अवरोधित",
+    // Emergency
+    "emergency.title": "आपातकालीन सहायता",
+    "emergency.button": "आपातकालीन अलर्ट भेजें",
+    "emergency.contacts": "विश्वसनीय संपर्क",
+    "emergency.add": "संपर्क जोड़ें",
+    "emergency.silent": "साइलेंट इमरजेंसी मोड",
+    "emergency.silent.desc": "बिना आवाज या कंपन के अलर्ट भेजें",
+    "emergency.templates": "आपातकालीन संदेश टेम्पलेट्स",
     
-    // Setup Wizard
-    "setup.welcome": "शील्ड सेफ जोन में आपका स्वागत है",
-    "setup.desc": "आइए आपकी धोखाधड़ी सुरक्षा सेटअप करें",
-    "setup.step": "चरण",
-    "setup.of": "का",
-    "setup.permissions": "आवश्यक अनुमतियां",
-    "setup.permissions.desc": "धोखाधड़ी से बचाने के लिए इन अनुमतियों की आवश्यकता है",
-    "setup.next": "अगला",
-    "setup.skip": "छोड़ें",
-    "setup.complete": "सेटअप पूरा करें",
+    // Call Monitoring
+    "call.monitoring": "कॉल निगरानी",
+    "call.active": "कॉल निगरानी सक्रिय है। हम संभावित स्कैम के लिए इनकमिंग कॉल का विश्लेषण करेंगे और रीयल-टाइम चेतावनी प्रदान करेंगे।",
+    "call.inactive": "कॉल निगरानी अक्षम है। संदिग्ध कॉल के बारे में चेतावनी प्राप्त करने के लिए इसे सक्षम करें।",
+    "call.monitored": "निगरानी की गई:",
+    "call.calls": "पिछले 7 दिनों में विश्लेषित कॉल",
+    "call.settings": "अलर्ट सेटिंग्स",
+    "call.settings.desc": "चुनें कि संदिग्ध कॉल का पता चलने पर आपको कैसे अलर्ट किया जाए",
+    "call.vibration.low": "कम (हल्का स्पंदन)",
+    "call.vibration.medium": "मध्यम (मानक कंपन)",
+    "call.vibration.high": "उच्च (मजबूत अलर्ट)",
+    "call.vibration.off": "बंद (केवल विजुअल अलर्ट)",
+    "call.history": "कॉल निगरानी इतिहास",
+    "call.duration": "अवधि:",
+    "call.flagged": "इस कॉल को फ्लैग क्यों किया गया?",
+    "call.words": "संदिग्ध शब्द पहचाने गए:",
     
-    // Dialog & Form Labels
-    "dialog.add": "संपर्क जोड़ें",
-    "dialog.name": "नाम",
-    "dialog.phone": "फोन नंबर",
-    "dialog.relation": "संबंध",
-    "dialog.cancel": "रद्द करें",
-    "dialog.add.action": "संपर्क जोड़ें",
+    // Status labels
+    "status.safe": "सुरक्षित",
+    "status.suspicious": "संदिग्ध",
+    "status.blocked": "अवरुद्ध",
     
-    // Common Actions
-    "action.view": "देखें",
-    "action.edit": "संपादित करें",
-    "action.delete": "हटाएं",
-    "action.cancel": "रद्द करें",
-    "action.save": "सहेजें",
-    "action.confirm": "पुष्टि करें",
-    "action.continue": "जारी रखें",
-    "action.skip": "छोड़ें",
-    "action.back": "वापस",
+    // Education
+    "education.progress": "आपकी सीखने की प्रगति",
+    "education.articles": "स्कैम शिक्षा लेख",
+    "education.read": "पढ़ा गया",
+    "education.readNow": "अभी पढ़ें",
+    "education.test": "अपने ज्ञान का परीक्षण करें",
+    "education.quiz": "अपने स्कैम जागरूकता का परीक्षण करने के लिए एक त्वरित क्विज लें",
+    "education.start": "क्विज शुरू करें",
+    "education.badges": "आपके बैज",
+    "education.whatsapp": "व्हाट्सएप पर अपडेट रहें",
+    "education.whatsapp.desc": "व्हाट्सएप पर नियमित स्कैम अलर्ट और टिप्स प्राप्त करें",
+    "education.enroll": "व्हाट्सएप अपडेट के लिए नामांकन करें",
     
-    // Common Status Labels
-    "status.protected": "सुरक्षित",
-    "status.at.risk": "जोखिम में",
-    "status.critical": "महत्वपूर्ण",
-    "status.analyzing": "विश्लेषण",
-    "status.detected": "पता चला",
+    // Success messages
+    "success.shield": "सुरक्षा सक्रिय",
+    "success.shield.desc": "आप स्कैम और धोखाधड़ी के प्रयासों से सुरक्षित हैं।",
+    "success.scan": "स्कैन पूरा हुआ",
+    "success.scan.desc": "आपके डिवाइस पर कोई खतरा नहीं मिला।",
+    "success.setup": "सेटअप पूरा हुआ",
+    "success.setup.desc": "आपका शील्ड सेफ जोन अब कॉन्फ़िगर किया गया है।",
+    "success.support": "समर्थन अनुरोध भेजा गया",
+    "success.support.desc": "हमारी टीम जल्द ही आपसे संपर्क करेगी।",
     
-    // Toast Messages
-    "toast.language": "भाषा बदल गई है",
-    "toast.protection.on": "सुरक्षा सक्रिय की गई",
-    "toast.protection.off": "सुरक्षा निष्क्रिय की गई",
+    // Toast messages
     "toast.setup.skip": "सेटअप छोड़ा गया",
-    "toast.setup.skip.desc": "आप बाद में सेटिंग्स में सेटअप पूरा कर सकते हैं।",
-    "toast.contact.add": "संपर्क जोड़ा गया",
-    "toast.contact.add.desc": "आपातकालीन संपर्क के रूप में जोड़ा गया है।",
-    "toast.contact.remove": "संपर्क हटाया गया",
-    "toast.contact.remove.desc": "आपातकालीन संपर्कों से हटा दिया गया है।",
-    "toast.alert.sent": "आपातकालीन अलर्ट भेजा गया",
-    "toast.alert.sent.desc": "आपके विश्वसनीय संपर्कों को आपकी स्थिति के बारे में सूचित कर दिया गया है।",
-    "toast.silent.on": "साइलेंट मोड सक्रिय",
-    "toast.silent.on.desc": "आपातकालीन अलर्ट शांति से भेजे जाएंगे।",
-    "toast.silent.off": "साइलेंट मोड निष्क्रिय",
-    "toast.silent.off.desc": "आपातकालीन अलर्ट ध्वनि सूचनाएं बजाएंगे।",
-    "toast.article": "लेख पढ़ा हुआ चिह्नित किया गया",
-    "toast.article.desc": "इसके बारे में जानने का शानदार काम",
-    "toast.badge": "बैज अर्जित किया!",
-    "toast.badge.desc": "आपने स्कैम स्पॉटर बैज अर्जित किया है!",
-    "toast.quiz": "प्रश्नोत्तरी शुरू हो रही है",
-    "toast.quiz.desc": "अपने धोखाधड़ी जागरूकता ज्ञान का परीक्षण करने के लिए तैयार हो जाइए!",
+    "toast.setup.skip.desc": "आप बाद में सेटिंग्स कॉन्फ़िगर कर सकते हैं।",
     
-    // Common Words
-    "common.today": "आज",
-    "common.yesterday": "कल",
-    "common.day.ago": "दिन पहले",
-    "common.family": "परिवार",
-    "common.friend": "दोस्त",
-    "common.other": "अन्य",
-    "common.safe": "सुरक्षित",
-    "common.suspicious": "संदिग्ध",
-    "common.blocked": "अवरुद्ध",
-    "common.scams": "धोखाधड़ी",
+    // Setup wizard
+    "setup.intro.title": "शील्ड सेफ जोन में आपका स्वागत है",
+    "setup.intro.desc": "डिजिटल धोखाधड़ी से आपकी सुरक्षा यहां से शुरू होती है। चलिए अधिकतम सुरक्षा के लिए आपके ऐप को सेट करें।",
+    "setup.intro.protection": "रीयल-टाइम सुरक्षा",
+    "setup.intro.protection.desc": "कॉल और संदेशों की निगरानी करता है",
+    "setup.intro.alerts": "तत्काल अलर्ट",
+    "setup.intro.alerts.desc": "संभावित स्कैम के बारे में सूचित किया जाता है",
+    "setup.intro.education": "स्कैम शिक्षा",
+    "setup.intro.education.desc": "आम स्कैम तकनीकों के बारे में जानें",
+    "setup.permissions.title": "आवश्यक अनुमतियां",
+    "setup.permissions.desc": "आपकी सुरक्षा के लिए शील्ड सेफ जोन को कुछ विशेषताओं तक पहुंच की आवश्यकता है",
+    "setup.permissions.sms": "एसएमएस एक्सेस",
+    "setup.permissions.sms.desc": "संदिग्ध संदेशों की निगरानी के लिए",
+    "setup.permissions.calls": "कॉल एक्सेस",
+    "setup.permissions.calls.desc": "संदिग्ध कॉल की निगरानी के लिए",
+    "setup.permissions.grant": "अनुमति दें",
+    "setup.notifications.title": "नोटिफिकेशन सक्षम करें",
+    "setup.notifications.desc": "संभावित स्कैम का पता चलने पर तत्काल अलर्ट प्राप्त करें",
+    "setup.notifications.push": "पुश नोटिफिकेशन",
+    "setup.notifications.push.desc": "रीयल-टाइम स्कैम अलर्ट के लिए",
+    "setup.notifications.enable": "सक्षम करें",
+    "setup.notifications.later": "आप बाद में नोटिफिकेशन सेटिंग्स बदल सकते हैं",
+    "setup.emergency.title": "आपातकालीन संपर्क",
+    "setup.emergency.desc": "आपातकालीन सहायता के लिए विश्वसनीय संपर्क जोड़ें",
+    "setup.emergency.alert": "यदि आप स्कैम का शिकार हो जाते हैं, तो हम तुरंत आपके विश्वसनीय संपर्कों को अलर्ट कर सकते हैं",
+    "setup.emergency.setup": "आपातकालीन संपर्क सेट करें",
+    "setup.emergency.skip": "आप इस चरण को छोड़ सकते हैं और बाद में आपातकालीन संपर्क सेट कर सकते हैं",
+    "setup.done.title": "सेटअप पूरा हुआ!",
+    "setup.done.desc": "अब आप स्कैम से सुरक्षित हैं। आप हमेशा अपनी सेटिंग्स को बाद में समायोजित कर सकते हैं।",
+    "setup.done.next": "आगे क्या है?",
+    "setup.done.protection": "आपकी सुरक्षा अब सक्रिय है",
+    "setup.done.sms": "एसएमएस स्कैम निगरानी सक्षम है",
+    "setup.done.calls": "कॉल निगरानी तैयार है",
+    "setup.skip": "सेटअप छोड़ें",
+    "setup.back": "वापस",
+    "setup.next": "अगला",
+    "setup.finish": "समाप्त",
+    
+    // FAQ questions
+    "faq.question.1": "शील्ड सेफ जोन स्कैम का पता कैसे लगाता है?",
+    "faq.answer.1": "शील्ड सेफ जोन एसएमएस संदेशों और कॉल में सामान्य स्कैम पैटर्न की पहचान करने के लिए उन्नत पैटर्न पहचान और मशीन लर्निंग का उपयोग करता है। यह इनकमिंग संचार की तुलना ज्ञात स्कैम पैटर्न के डेटाबेस से करता है, जिसे नए खतरों से बचाव के लिए नियमित रूप से अपडेट किया जाता है।",
+    "faq.question.2": "क्या ऐप मेरे व्यक्तिगत संदेशों तक पहुंचेगा?",
+    "faq.answer.2": "शील्ड सेफ जोन केवल संभावित स्कैम पैटर्न के लिए संदेशों को स्कैन करता है और आपके व्यक्तिगत संदेशों की सामग्री को स्टोर या साझा नहीं करता है। बेहतर गोपनीयता के लिए आप सेटिंग्स में केवल स्थानीय प्रोसेसिंग चुन सकते हैं।",
+    "faq.question.3": "स्कैम डिटेक्शन कितना सटीक है?",
+    "faq.answer.3": "हमारी डिटेक्शन सिस्टम की सटीकता दर 95% से अधिक है। हालांकि, कोई भी सिस्टम पूर्ण नहीं है, इसलिए हम आपको सुरक्षित संदेशों को चिह्नित करने की अनुमति देते हैं जो गलत तरीके से फ्लैग किए गए हो सकते हैं। यह फीडबैक समय के साथ हमारे डिटेक्शन एल्गोरिदम को बेहतर बनाता है।",
+    "faq.question.4": "अगर मुझे कोई स्कैम मिले तो मुझे क्या करना चाहिए?",
+    "faq.answer.4": "यदि आपको स्कैम संदेश या कॉल प्राप्त होता है, तो इसकी रिपोर्ट करने के लिए ऐप का उपयोग करें। किसी भी लिंक पर क्लिक करने या संदिग्ध नंबरों पर वापस कॉल करने से बचें। यदि आप पहले ही स्कैमर के साथ बातचीत कर चुके हैं, तो तुरंत अपने बैंक से संपर्क करें और किसी भी समझौता किए गए पासवर्ड को बदलें।",
+    "faq.question.5": "क्या शील्ड सेफ जोन ऑफलाइन काम करता है?",
+    "faq.answer.5": "बेसिक स्कैम डिटेक्शन नवीनतम डाउनलोड किए गए स्कैम पैटर्न का उपयोग करके ऑफलाइन काम करता है। हालांकि, सबसे अप-टू-डेट सुरक्षा के लिए, हम स्कैम डेटाबेस को अपडेट करने के लिए नियमित इंटरनेट कनेक्शन की सलाह देते हैं।"
   },
-  
-  // Telugu translations
   te: {
-    // App-wide
+    // App general
     "app.name": "షీల్డ్ సేఫ్ జోన్",
-    "app.version": "వెర్షన్ 1.0.0 బీటా",
-    "app.tagline": "డిజిటల్ మోసాల నుండి మీ విశ్వసనీయ రక్షకుడు",
-    "app.loading": "లోడ్ అవుతోంది...",
+    "app.version": "v1.0.0 బీటా",
+    "app.tagline": "డిజిటల్ మోసాలకు వ్యతిరేకంగా మీ వ్యక్తిగత కవచం",
+    "app.loading": "మీ రక్షణను సెటప్ చేస్తోంది...",
     
-    // Navigation & Menu
+    // Actions
+    "action.back": "హోమ్‌కి తిరిగి వెళ్లండి",
+    "action.scan": "ఇప్పుడు స్కాన్ చేయండి",
+    "action.read": "మరింత చదవండి",
+    "action.submit": "సమర్పించండి",
+    "action.cancel": "రద్దు చేయండి",
+    "action.next": "తరువాత",
+    "action.prev": "మునుపటి",
+    
+    // Menu items
     "menu.home": "హోమ్",
-    "menu.sms": "SMS మోస గుర్తింపు",
-    "menu.call": "కాల్ పర్యవేక్షణ",
-    "menu.history": "ముప్పు చరిత్ర",
+    "menu.sms": "SMS రక్షణ",
+    "menu.call": "కాల్ రక్షణ",
+    "menu.history": "ప్రమాద చరిత్ర",
     "menu.education": "మోసం విద్య",
     "menu.emergency": "అత్యవసర సహాయం",
-    "menu.settings": "సెట్టింగులు",
-    "menu.about": "గురించి/సహాయం",
+    "menu.settings": "సెట్టింగ్‌లు",
+    "menu.about": "గురించి & సహాయం",
     
-    // Home Page
-    "home.protection.status": "రక్షించబడింది",
-    "home.protection.message": "అన్ని సిస్టమ్‌లు యాక్టివ్‌గా ఉన్నాయి",
-    "home.scan.button": "త్వరిత స్కాన్",
-    "home.scan.progress": "ముప్పుల కోసం స్కాన్ చేస్తోంది...",
-    "home.stats.sms": "SMS రక్షించబడినవి",
-    "home.stats.calls": "కాల్స్ స్క్రీన్ చేయబడినవి",
-    "home.stats.security": "భద్రతా స్థాయి",
+    // Home page
+    "home.protection.status": "రక్షణ స్థితి",
+    "home.protection.message": "యాక్టివ్ & ప్రొటెక్టెడ్",
+    "home.scan.button": "స్కాన్",
+    "home.scan.progress": "మీ పరికరాన్ని స్కాన్ చేస్తోంది",
+    "home.stats.sms": "SMS ప్రమాదాలు",
+    "home.stats.calls": "కాల్ ప్రమాదాలు",
+    "home.stats.security": "భద్రత",
     "home.security.high": "అధిక",
-    "home.fullscan": "పూర్తి సిస్టమ్ స్కాన్",
-    "home.fullscan.desc": "అన్ని యాప్‌లు & సందేశాలను తనిఖీ చేయండి",
-    "home.threat": "ముప్పు చరిత్ర",
-    "home.threat.desc": "గుర్తించబడిన మోసాలను చూడండి",
-    "home.safety": "సురక్షితంగా ఉండండి",
-    "home.safety.desc": "మోసాలను ఎలా నివారించాలో నేర్చుకోండి",
+    "home.security.medium": "మధ్యమ",
+    "home.security.low": "తక్కువ",
+    "home.fullscan": "పూర్తి స్కాన్ రన్ చేయండి",
+    "home.fullscan.desc": "ప్రమాదాల కోసం లోతైన స్కాన్",
+    "home.threat": "ప్రమాద చరిత్ర",
+    "home.threat.desc": "గుర్తించిన ప్రమాదాలను చూడండి",
+    "home.safety": "భద్రతా చిట్కాలు",
+    "home.safety.desc": "సురక్షితంగా ఉండటం నేర్చుకోండి",
     
-    // Success Messages
-    "success.scan": "త్వరిత స్కాన్ పూర్తయింది!",
-    "success.scan.desc": "ఎటువంటి ముప్పులు కనుగొనబడలేదు, మీరు సురక్షితంగా ఉన్నారు!",
-    "success.shield": "షీల్డ్ సేఫ్ జోన్ యాక్టివేట్ చేయబడింది!",
-    "success.shield.desc": "ఇప్పుడు మీరు మోసాల నుండి రక్షించబడ్డారు.",
-    "success.setup": "సెటప్ పూర్తయింది!",
-    "success.setup.desc": "ఇప్పుడు మీరు మోసాల నుండి రక్షించబడ్డారు.",
-    "success.support": "సపోర్ట్ టికెట్ సృష్టించబడింది",
-    "success.support.desc": "మా టీమ్ 24 గంటల లోపు మీకు తిరిగి సమాధానం ఇస్తుంది.",
-    
-    // SMS Scam Detection Page
-    "sms.title": "SMS పర్యవేక్షణ",
-    "sms.active": "SMS పర్యవేక్షణ యాక్టివ్‌గా ఉంది. సంభావ్య మోసాల కోసం మేము మీ సందేశాలను విశ్లేషిస్తాము మరియు రియల్-టైమ్ హెచ్చరికలను అందిస్తాము.",
-    "sms.inactive": "SMS పర్యవేక్షణ నిలిపివేయబడింది. మోస సందేశాల నుండి మిమ్మల్ని రక్షించుకోవడానికి దీన్ని ప్రారంభించండి.",
-    "sms.monitored": "పర్యవేక్షించబడినవి:",
-    "sms.messages": "సందేశాలు",
-    "sms.filter": "ఫిల్టర్ స్థాయి",
-    "sms.filter.low": "తక్కువ (స్పష్టమైన మోసాలు మాత్రమే)",
-    "sms.filter.medium": "మధ్యస్థం (సిఫార్సు చేయబడింది)",
-    "sms.filter.high": "ఎక్కువ (గరిష్ట రక్షణ)",
-    "sms.history": "ఇటీవలి సందేశాలు",
-    "sms.safe": "సురక్షితం",
-    "sms.suspicious": "అనుమానాస్పదంగా",
-    "sms.blocked": "నిరోధించబడింది",
-    "sms.flagged": "ఈ సందేశం ఎందుకు ఫ్లాగ్ చేయబడింది?",
-    "sms.words": "అనుమానాస్పద పదాలు గుర్తించబడ్డాయి:",
-    
-    // Call Protection Page
-    "call.title": "కాల్ పర్యవేక్షణ",
-    "call.active": "కాల్ పర్యవేక్షణ యాక్టివ్‌గా ఉంది. సంభావ్య మోసాల కోసం మేము ఇన్‌కమింగ్ కాల్‌లను విశ్లేషిస్తాము మరియు రియల్-టైమ్ హెచ్చరికలను అందిస్తాము.",
-    "call.inactive": "కాల్ పర్యవేక్షణ నిలిపివేయబడింది. అనుమానాస్పద కాల్‌ల గురించి హెచ్చరికలను స్వీకరించడానికి దీన్ని ప్రారంభించండి.",
-    "call.monitored": "పర్యవేక్షించబడినవి:",
-    "call.calls": "కాల్స్",
-    "call.alert": "అలర్ట్ సెట్టింగులు",
-    "call.alert.desc": "అనుమానాస్పద కాల్ గుర్తించినప్పుడు మీకు ఎలా తెలియజేయాలో ఎంచుకోండి",
-    "call.vibration.low": "తక్కువ (సున్నితమైన స్పందన)",
-    "call.vibration.medium": "మధ్యస్థం (ప్రామాణిక వైబ్రేషన్)",
-    "call.vibration.high": "ఎక్కువ (బలమైన అలర్ట్)",
-    "call.vibration.off": "ఆఫ్ (విజువల్ అలర్ట్ మాత్రమే)",
-    "call.history": "కాల్ పర్యవేక్షణ చరిత్ర",
-    "call.duration": "వ్యవధి:",
-    "call.flagged": "ఈ కాల్ ఎందుకు ఫ్లాగ్ చేయబడింది?",
-    "call.words": "అనుమానాస్పద పదాలు గుర్తించబడ్డాయి:",
-    
-    // Education Hub
-    "edu.title": "మీ అభ్యాస పురోగతి",
-    "edu.articles": "చదివిన వ్యాసాలు",
-    "edu.scam": "మోసం విద్య వ్యాసాలు",
-    "edu.read": "చదవబడింది",
-    "edu.readnow": "ఇప్పుడే చదవండి",
-    "edu.quiz.title": "మీ జ్ఞానాన్ని పరీక్షించండి",
-    "edu.quiz.desc": "మీ మోసం అవగాహనను పరీక్షించడానికి త్వరిత క్విజ్ తీసుకోండి",
-    "edu.quiz.start": "క్విజ్ ప్రారంభించండి",
-    "edu.badges": "మీ బ్యాడ్జీలు",
-    "edu.whatsapp.title": "వాట్సాప్‌లో అప్‌డేట్‌గా ఉండండి",
-    "edu.whatsapp.desc": "క్రమం తప్పకుండా మోసం అలర్ట్‌లు మరియు చిట్కాలను నేరుగా వాట్సాప్‌లో స్వీకరించండి",
-    "edu.whatsapp.enroll": "వాట్సాప్ నవీకరణల కోసం నమోదు చేసుకోండి",
-    
-    // Emergency Page
-    "emergency.title": "అత్యవసర సహాయం",
-    "emergency.button.desc": "మీ విశ్వసనీయ పరిచయాలకు అత్యవసర అలర్ట్‌లను పంపడానికి బటన్‌ను నొక్కండి",
-    "emergency.silent": "నిశ్శబ్ద అత్యవసర మోడ్",
-    "emergency.silent.desc": "శబ్దం లేదా వైబ్రేషన్ లేకుండా అలర్ట్‌లను పంపండి",
-    "emergency.contacts": "విశ్వసనీయ పరిచయాలు",
-    "emergency.contacts.add": "జోడించు",
-    "emergency.contacts.none": "ఇంకా పరిచయాలు లేవు",
-    "emergency.contacts.none.desc": "అత్యవసర పరిస్థితులలో సహాయపడగల విశ్వసనీయ పరిచయాలను జోడించండి.",
-    "emergency.contacts.add.full": "అత్యవసర పరిచయాన్ని జోడించండి",
-    "emergency.contacts.add.more": "మరిన్ని పరిచయాలను జోడించండి",
-    "emergency.templates": "అత్యవసర సందేశ టెంప్లేట్‌లు",
-    "emergency.template.scam": "మోసం అలర్ట్",
-    "emergency.template.scam.text": "నేను ఒక మోసగాడి ద్వారా లక్ష్యంగా ఉన్నాను. ఇది చట్టబద్ధమైనదా కాదా సత్యాపించడంలో సహాయపడటానికి దయచేసి నాకు వెంటనే కాల్ చేయండి.",
-    "emergency.template.help": "సహాయం అవసరం",
-    "emergency.template.help.text": "నాకు తక్షణ సహాయం అవసరం. దయచేసి నాకు కాల్ చేయండి లేదా అధికారులను సంప్రదించండి. నా చివరిగా తెలిసిన ప్రాంతం జతచేయబడింది.",
-    
-    // Settings Page
-    "settings.appearance": "అపియరెన్స్",
-    "settings.dark": "డార్క్ మోడ్",
-    "settings.dark.desc": "యాప్ కోసం డార్క్ థీమ్ ఉపయోగించండి",
-    "settings.notifications": "నోటిఫికేషన్లు",
-    "settings.notify.scam": "మోసం అలర్ట్‌లు",
-    "settings.notify.scam.desc": "సంభావ్య ముప్పుల గురించి తెలియజేయబడండి",
-    "settings.notify.updates": "యాప్ నవీకరణలు",
-    "settings.notify.updates.desc": "నవీకరణలు అందుబాటులో ఉన్నప్పుడు తెలియజేయబడండి",
+    // Settings
     "settings.language": "భాష",
-    "settings.language.desc": "మీ ఇష్టమైన భాషను ఎంచుకోండి",
+    "settings.language.desc": "అప్లికేషన్ భాషను మార్చండి",
     "settings.english": "ఆంగ్లం",
     "settings.hindi": "హిందీ",
     "settings.telugu": "తెలుగు",
-    "settings.privacy": "గోప్యత",
-    "settings.privacy.local": "స్థానిక ప్రాసెసింగ్",
-    "settings.privacy.local.desc": "సాధ్యమైనప్పుడు డేటాను పరికరంలోనే ప్రాసెస్ చేయండి",
-    "settings.privacy.analytics": "వినియోగ గణాంకాలు పంచుకోండి",
-    "settings.privacy.analytics.desc": "అనామక డేటాతో యాప్‌ను మెరుగుపరచడానికి సహాయపడండి",
-    "settings.advanced": "అధునాతన సెట్టింగులు",
-    "settings.advanced.desc": "అధునాతన భద్రతా ఎంపికలను కాన్ఫిగర్ చేయండి",
+    "settings.darkMode": "డార్క్ మోడ్",
+    "settings.darkMode.desc": "లైట్ మరియు డార్క్ థీమ్ మధ్య మార్చండి",
+    "settings.notifications": "నోటిఫికేషన్లు",
+    "settings.notifications.desc": "యాప్ అలర్ట్‌లను నియంత్రించండి",
+    "settings.privacy": "గోప్యతా సెట్టింగ్‌లు",
+    "settings.privacy.desc": "డేటా రక్షణను నిర్వహించండి",
+    "settings.local": "స్థానిక ప్రాసెసింగ్",
+    "settings.local.desc": "పరికరంలో డేటాను ప్రాసెస్ చేయండి",
+    "settings.cloud": "క్లౌడ్ బ్యాకప్",
+    "settings.cloud.desc": "క్లౌడ్‌కి డేటాను బ్యాకప్ చేయండి",
+    "settings.appearance": "అప్పియరెన్స్",
+    "settings.permissions": "యాప్ అనుమతులు",
+    "settings.permissions.desc": "షీల్డ్ సేఫ్ జోన్ ఏమి యాక్సెస్ చేయగలదో నియంత్రించండి",
+    "settings.sms": "SMS యాక్సెస్",
+    "settings.calls": "కాల్ యాక్సెస్",
+    "settings.contacts": "కాంటాక్ట్స్ యాక్సెస్",
     
-    // About/Help Page
+    // About & Help
     "about.faq": "తరచుగా అడిగే ప్రశ్నలు",
-    "about.help": "సహాయం కావాలా?",
+    "about.help": "సహాయం పొందండి",
     "about.chat": "సపోర్ట్‌తో చాట్ చేయండి",
     "about.email": "ఇమెయిల్ సపోర్ట్",
     "about.call": "కాల్ సపోర్ట్",
     "about.learn": "మరింత తెలుసుకోండి",
     "about.privacy": "గోప్యతా విధానం",
-    "about.terms": "సేవా నియమాలు",
-    "about.rights": "సర్వహక్కులు రిజర్వు చేయబడ్డాయి",
+    "about.terms": "సేవా నిబంధనలు",
+    "about.rights": "సర్వహక్కులు కలివి",
     
-    // Threat History Page
-    "history.title": "ముప్పు చరిత్ర",
-    "history.desc": "గుర్తించబడిన మోసాలు మరియు ముప్పులను సమీక్షించండి",
-    "history.empty": "ఇంకా ఎటువంటి ముప్పులు గుర్తించబడలేదు",
-    "history.empty.desc": "మీరు రక్షించబడ్డారు మరియు ఇంతవరకు ఎటువంటి మోసాలు గుర్తించబడలేదు.",
-    "history.filter": "ముప్పులను ఫిల్టర్ చేయండి",
-    "history.filter.all": "అన్ని ముప్పులు",
-    "history.filter.sms": "SMS ముప్పులు",
-    "history.filter.call": "కాల్ ముప్పులు",
-    "history.date": "తేదీ",
-    "history.type": "రకం",
-    "history.status": "స్థితి",
-    "history.details": "వివరాలను చూడండి",
-    "history.reported": "నివేదించబడింది",
-    "history.blocked": "నిరోధించబడింది",
+    // Emergency
+    "emergency.title": "అత్యవసర సహాయం",
+    "emergency.button": "అత్యవసర అలర్ట్ పంపండి",
+    "emergency.contacts": "విశ్వసనీయ కాంటాక్ట్స్",
+    "emergency.add": "కాంటాక్ట్ జోడించండి",
+    "emergency.silent": "మౌన అత్యవసర మోడ్",
+    "emergency.silent.desc": "శబ్దం లేదా వైబ్రేషన్ లేకుండా అలర్ట్‌లను పంపండి",
+    "emergency.templates": "అత్యవసర సందేశ టెంప్లేట్‌లు",
     
-    // Setup Wizard
-    "setup.welcome": "షీల్డ్ సేఫ్ జోన్‌కి స్వాగతం",
-    "setup.desc": "మీ మోసం రక్షణను సెటప్ చేద్దాం",
-    "setup.step": "దశ",
-    "setup.of": "లో",
-    "setup.permissions": "అవసరమైన అనుమతులు",
-    "setup.permissions.desc": "మోసాల నుండి మిమ్మల్ని రక్షించడానికి ఈ అనుమతులు అవసరం",
-    "setup.next": "తదుపరి",
-    "setup.skip": "దాటవేయండి",
-    "setup.complete": "సెటప్ పూర్తి చేయండి",
+    // Call Monitoring
+    "call.monitoring": "కాల్ మానిటరింగ్",
+    "call.active": "కాల్ మానిటరింగ్ యాక్టివ్‌గా ఉంది. సంభావ్య స్కామ్‌ల కోసం ఇన్‌కమింగ్ కాల్‌లను విశ్లేషించి రియల్-టైమ్ హెచ్చరికలను అందిస్తాము.",
+    "call.inactive": "కాల్ మానిటరింగ్ నిలిపివేయబడింది. అనుమానాస్పద కాల్‌ల గురించి హెచ్చరికలు పొందడానికి దీనిని ప్రారంభించండి.",
+    "call.monitored": "పర్యవేక్షించబడినది:",
+    "call.calls": "గత 7 రోజుల్లో విశ్లేషించిన కాల్స్",
+    "call.settings": "అలర్ట్ సెట్టింగ్‌లు",
+    "call.settings.desc": "అనుమానాస్పద కాల్ గుర్తించినప్పుడు మీకు ఎలా అలర్ట్ చేయాలో ఎంచుకోండి",
+    "call.vibration.low": "తక్కువ (సున్నితమైన స్పందన)",
+    "call.vibration.medium": "మధ్యస్థం (ప్రామాణిక వైబ్రేషన్)",
+    "call.vibration.high": "అధిక (బలమైన అలర్ట్)",
+    "call.vibration.off": "ఆఫ్ (దృశ్యమానం అలర్ట్ మాత్రమే)",
+    "call.history": "కాల్ మానిటరింగ్ చరిత్ర",
+    "call.duration": "వ్యవధి:",
+    "call.flagged": "ఈ కాల్‌ను ఎందుకు ఫ్లాగ్ చేశారు?",
+    "call.words": "గుర్తించిన అనుమానాస్పద పదాలు:",
     
-    // Dialog & Form Labels
-    "dialog.add": "పరిచయాన్ని జోడించండి",
-    "dialog.name": "పేరు",
-    "dialog.phone": "ఫోన్ నంబర్",
-    "dialog.relation": "సంబంధం",
-    "dialog.cancel": "రద్దు చేయండి",
-    "dialog.add.action": "పరిచయాన్ని జోడించండి",
+    // Status labels
+    "status.safe": "సురక్షితం",
+    "status.suspicious": "అనుమానాస్పదం",
+    "status.blocked": "బ్లాక్ చేయబడింది",
     
-    // Common Actions
-    "action.view": "చూడండి",
-    "action.edit": "సవరించండి",
-    "action.delete": "తొలగించండి",
-    "action.cancel": "రద్దు చేయండి",
-    "action.save": "సేవ్ చేయండి",
-    "action.confirm": "నిర్ధారించండి",
-    "action.continue": "కొనసాగించండి",
-    "action.skip": "దాటవేయండి",
-    "action.back": "వెనుకకు",
+    // Education
+    "education.progress": "మీ నేర్చుకోవడం పురోగతి",
+    "education.articles": "స్కామ్ విద్య వ్యాసాలు",
+    "education.read": "చదివారు",
+    "education.readNow": "ఇప్పుడు చదవండి",
+    "education.test": "మీ జ్ఞానాన్ని పరీక్షించండి",
+    "education.quiz": "మీ స్కామ్ అవగాహనను పరీక్షించడానికి త్వరిత క్విజ్ తీసుకోండి",
+    "education.start": "క్విజ్ ప్రారంభించండి",
+    "education.badges": "మీ బ్యాడ్జ్‌లు",
+    "education.whatsapp": "WhatsApp లో అప్‌డేట్‌గా ఉండండి",
+    "education.whatsapp.desc": "WhatsApp లో క్రమం తప్పకుండా స్కామ్ అలర్ట్‌లు మరియు చిట్కాలను పొందండి",
+    "education.enroll": "WhatsApp అప్‌డేట్‌ల కోసం నమోదు చేసుకోండి",
     
-    // Common Status Labels
-    "status.protected": "రక్షించబడింది",
-    "status.at.risk": "ప్రమాదంలో",
-    "status.critical": "క్రిటికల్",
-    "status.analyzing": "విశ్లేషిస్తోంది",
-    "status.detected": "గుర్తించబడింది",
+    // Success messages
+    "success.shield": "రక్షణ యాక్టివ్",
+    "success.shield.desc": "మీరు స్కామ్‌లు మరియు మోసపూరిత ప్రయత్నాల నుండి రక్షించబడ్డారు.",
+    "success.scan": "స్కాన్ పూర్తయింది",
+    "success.scan.desc": "మీ పరికరంలో ఎలాంటి ప్రమాదాలు గుర్తించబడలేదు.",
+    "success.setup": "సెటప్ పూర్తయింది",
+    "success.setup.desc": "మీ షీల్డ్ సేఫ్ జోన్ ఇప్పుడు కాన్ఫిగర్ చేయబడింది.",
+    "success.support": "మద్దతు అభ్యర్థన పంపబడింది",
+    "success.support.desc": "మా బృందం త్వరలో మీకు తిరిగి సమాచారం ఇస్తుంది.",
     
-    // Toast Messages
-    "toast.language": "భాష మార్చబడింది",
-    "toast.protection.on": "రక్షణ ప్రారంభించబడింది",
-    "toast.protection.off": "రక్షణ నిలిపివేయబడింది",
+    // Toast messages
     "toast.setup.skip": "సెటప్ దాటవేయబడింది",
-    "toast.setup.skip.desc": "మీరు తర్వాత సెట్టింగులలో సెటప్ పూర్తి చేయవచ్చు.",
-    "toast.contact.add": "పరిచయం జోడించబడింది",
-    "toast.contact.add.desc": "అత్యవసర పరిచయంగా జోడించబడింది.",
-    "toast.contact.remove": "పరిచయం తొలగించబడింది",
-    "toast.contact.remove.desc": "అత్యవసర పరిచయాల నుండి తొలగించబడింది.",
-    "toast.alert.sent": "అత్యవసర అలర్ట్ పంపబడింది",
-    "toast.alert.sent.desc": "మీ విశ్వసనీయ పరిచయాలకు మీ పరిస్థితి గురించి తెలియజేయబడింది.",
-    "toast.silent.on": "నిశ్శబ్ద మోడ్ ప్రారంభించబడింది",
-    "toast.silent.on.desc": "అత్యవసర అలర్ట్‌లు నిశ్శబ్దంగా పంపబడతాయి.",
-    "toast.silent.off": "నిశ్శబ్ద మోడ్ నిలిపివేయబడింది",
-    "toast.silent.off.desc": "అత్యవసర అలర్ట్‌లు శబ్ద నోటిఫికేషన్‌లను ఇస్తాయి.",
-    "toast.article": "వ్యాసం చదివినట్లుగా మార్క్ చేయబడింది",
-    "toast.article.desc": "గురించి నేర్చుకోవడం చాలా బాగుంది",
-    "toast.badge": "బ్యాడ్జ్ సంపాదించారు!",
-    "toast.badge.desc": "మీరు స్కామ్ స్పాటర్ బ్యాడ్జ్ సంపాదించారు!",
-    "toast.quiz": "క్విజ్ ప్రారంభమవుతోంది",
-    "toast.quiz.desc": "మీ మోసం అవగాహన జ్ఞానాన్ని పరీక్షించడానికి సిద్ధంగా ఉండండి!",
+    "toast.setup.skip.desc": "మీరు తర్వాత సెట్టింగ్‌లను కాన్ఫిగర్ చేయవచ్చు.",
     
-    // Common Words
-    "common.today": "నేడు",
-    "common.yesterday": "నిన్న",
-    "common.day.ago": "రోజుల క్రితం",
-    "common.family": "కుటుంబం",
-    "common.friend": "స్నేహితుడు",
-    "common.other": "ఇతర",
-    "common.safe": "సురక్షితం",
-    "common.suspicious": "అనుమానాస్పదం",
-    "common.blocked": "నిరోధించబడింది",
-    "common.scams": "మోసాలు",
+    // Setup wizard
+    "setup.intro.title": "షీల్డ్ సేఫ్ జోన్‌కి స్వాగతం",
+    "setup.intro.desc": "డిజిటల్ మోసాలకు వ్యతిరేకంగా మీ రక్షణ ఇక్కడ నుండి ప్రారంభమవుతుంది. గరిష్ట భద్రత కోసం మీ యాప్‌ను సెటప్ చేద్దాం.",
+    "setup.intro.protection": "రియల్-టైమ్ రక్షణ",
+    "setup.intro.protection.desc": "కాల్‌లు మరియు సందేశాలను పర్యవేక్షిస్తుంది",
+    "setup.intro.alerts": "తక్షణ అలర్ట్‌లు",
+    "setup.intro.alerts.desc": "సంభావ్య స్కామ్‌ల గురించి తెలియజేస్తుంది",
+    "setup.intro.education": "స్కామ్ విద్య",
+    "setup.intro.education.desc": "సాధారణ స్కామ్ పద్ధతుల గురించి తెలుసుకోండి",
+    "setup.permissions.title": "అవసరమైన అనుమతులు",
+    "setup.permissions.desc": "మిమ్మల్ని రక్షించడానికి షీల్డ్ సేఫ్ జోన్‌కు కొన్ని ఫీచర్‌లకు యాక్సెస్ అవసరం",
+    "setup.permissions.sms": "SMS యాక్సెస్",
+    "setup.permissions.sms.desc": "అనుమానాస్పద సందేశాలను పర్యవేక్షించడానికి",
+    "setup.permissions.calls": "కాల్ యాక్సెస్",
+    "setup.permissions.calls.desc": "అనుమానాస్పద కాల్‌లను పర్యవేక్షించడానికి",
+    "setup.permissions.grant": "అనుమతి ఇవ్వండి",
+    "setup.notifications.title": "నోటిఫికేషన్‌లను ప్రారంభించండి",
+    "setup.notifications.desc": "సంభావ్య స్కామ్‌లు గుర్తించినప్పుడు తక్షణ అలర్ట్‌లు పొందండి",
+    "setup.notifications.push": "పుష్ నోటిఫికేషన్‌లు",
+    "setup.notifications.push.desc": "రియల్-టైమ్ స్కామ్ అలర్ట్‌ల కోసం",
+    "setup.notifications.enable": "ప్రారంభించండి",
+    "setup.notifications.later": "మీరు ఎప్పుడైనా నోటిఫికేషన్ సెట్టింగ్‌లను మార్చవచ్చు",
+    "setup.emergency.title": "అత్యవసర కాంటాక్ట్‌లు",
+    "setup.emergency.desc": "అత్యవసర సహాయం కోసం విశ్వసనీయ కాంటాక్ట్‌లను జోడించండి",
+    "setup.emergency.alert": "మీరు స్కామ్‌కి గురైతే, మేము మీ విశ్వసనీయ కాంటాక్ట్‌లకు వెంటనే హెచ్చరిక చేయగలం",
+    "setup.emergency.setup": "అత్యవసర కాంటాక్ట్‌లను సెటప్ చేయండి",
+    "setup.emergency.skip": "మీరు ఈ దశను దాటవేసి తర్వాత అత్యవసర కాంటాక్ట్‌లను సెటప్ చేయవచ్చు",
+    "setup.done.title": "సెటప్ పూర్తయింది!",
+    "setup.done.desc": "మీరు ఇప్పుడు స్కామ్‌ల నుండి రక్షించబడ్డారు. మీరు ఎప్పుడైనా మీ సెట్టింగ్‌లను సర్దుబాటు చేయవచ్చు.",
+    "setup.done.next": "తరువాత ఏమి చేయాలి?",
+    "setup.done.protection": "మీ రక్షణ ఇప్పుడు యాక్టివ్‌గా ఉంది",
+    "setup.done.sms": "SMS స్కామ్ మానిటరింగ్ ప్రారంభించబడింది",
+    "setup.done.calls": "కాల్ మానిటరింగ్ సిద్ధంగా ఉంది",
+    "setup.skip": "సెటప్‌ని దాటవేయండి",
+    "setup.back": "వెనక్కి",
+    "setup.next": "తరువాత",
+    "setup.finish": "ముగించు",
+    
+    // FAQ questions
+    "faq.question.1": "షీల్డ్ సేఫ్ జోన్ స్కామ్‌లను ఎలా గుర్తిస్తుంది?",
+    "faq.answer.1": "షీల్డ్ సేఫ్ జోన్ SMS సందేశాలు మరియు కాల్‌లలో సాధారణ స్కామ్ పద్ధతులను గుర్తించడానికి అధునాతన ప్యాటర్న్ గుర్తింపు మరియు మెషీన్ లెర్నింగ్‌ను ఉపయోగిస్తుంది. ఇది ఇన్‌కమింగ్ కమ్యూనికేషన్‌లను తెలిసిన స్కామ్ ప్యాటర్న్‌ల డేటాబేస్‌తో పోలిస్తుంది, ఇది కొత్త ముప్పుల నుండి రక్షించడానికి క్రమం తప్పకుండా అప్‌డేట్ చేయబడుతుంది.",
+    "faq.question.2": "యాప్ నా వ్యక్తిగత సందేశాలను యాక్సెస్ చేస్తుందా?",
+    "faq.answer.2": "షీల్డ్ సేఫ్ జోన్ సంభావ్య స్కామ్ ప్యాటర్న్‌ల కోసం మాత్రమే సందేశాలను స్కాన్ చేస్తుంది మరియు మీ వ్యక్తిగత సందేశాల కంటెంట్‌ను నిల్వ చేయదు లేదా షేర్ చేయదు. మెరుగైన గోప్యత కోసం మీరు సెట్టింగ్‌లలో స్థానిక-మాత్రమే ప్రాసెసింగ్‌ని ఎంచుకోవచ్చు.",
+    "faq.question.3": "స్కామ్ గుర్తింపు ఎంత ఖచ్చితమైనది?",
+    "faq.answer.3": "మా గుర్తింపు వ్యవస్థ 95% కంటే ఎక్కువ ఖచ్చితత్వ రేటును కలిగి ఉంది. అయినప్పటికీ, ఏ సిస్టమ్ కూడా సంపూర్ణంగా లేదు, అందుకే తప్పుగా ఫ్లాగ్ చేయబడవచ్చుని సురక్షితమైన సందేశాలను గుర్తించడానికి మేము మిమ్మల్ని అనుమతిస్తాము. ఈ అభిప్రాయం కాలక్రమేణా మా గుర్తింపు అల్గారిథమ్‌లను మెరుగుపరుస్తుంది.",
+    "faq.question.4": "నాకు ఒక స్కామ్ వస్తే నేను ఏమి చేయాలి?",
+    "faq.answer.4": "మీకు స్కామ్ మెసేజ్ లేదా కాల్ వస్తే, దాన్ని రిపోర్ట్ చేయడానికి యాప్‌ని ఉపయోగించండి. ఏవైనా లింక్‌లపై క్లిక్ చేయడం లేదా అనుమానాస్పద నంబర్‌లకు తిరిగి కాల్ చేయడం మానుకోండి. మీరు ఇప్పటికే స్కామర్‌తో సంభాషించినట్లయితే, వెంటనే మీ బ్యాంక్‌ని సంప్రదించండి మరియు రాజీపడిన పాస్‌వర్డ్‌లను మార్చండి.",
+    "faq.question.5": "షీల్డ్ సేఫ్ జోన్ ఆఫ్‌లైన్‌లో పని చేస్తుందా?",
+    "faq.answer.5": "ప్రాథమిక స్కామ్ గుర్తింపు తాజాగా డౌన్‌లోడ్ చేయబడిన స్కామ్ ప్యాటర్న్‌లను ఉపయోగించి ఆఫ్‌లైన్‌లో పని చేస్తుంది. అయినప్పటికీ, అత్యంత తాజా రక్షణ కోసం, స్కామ్ డేటాబేస్‌ని అప్‌డేట్ చేయడానికి క్రమం తప్పకుండా ఇంటర్నెట్ కనెక్షన్‌ని సిఫార్సు చేస్తాము."
   }
 };
 
-// LanguageProvider component
-export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  const [language, setLanguageState] = useState<Language>('en');
+// Create the language context
+const LanguageContext = createContext<LanguageContextType>({
+  language: "en",
+  setLanguage: () => {},
+  t: () => "",
+});
+
+// Language provider component
+export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [language, setLanguageState] = useState<SupportedLanguage>(() => {
+    // Initialize with stored language or default to English
+    const savedLanguage = localStorage.getItem("language");
+    return (savedLanguage as SupportedLanguage) || "en";
+  });
 
   useEffect(() => {
-    // Load preferred language from localStorage
-    const savedLanguage = localStorage.getItem('language') as Language;
-    if (savedLanguage && ['en', 'hi', 'te'].includes(savedLanguage)) {
-      setLanguageState(savedLanguage);
-    }
-  }, []);
-
-  const setLanguage = (newLanguage: Language) => {
-    setLanguageState(newLanguage);
-    localStorage.setItem('language', newLanguage);
-    
-    // Show toast notification for language change
-    const msgs = {
-      en: "Language changed to English",
-      hi: "भाषा हिंदी में बदल गई है",
-      te: "భాష తెలుగులో మార్చబడింది"
-    };
-    // Toast implementation will be handled in the consuming component
-  };
+    // Save language preference to localStorage when it changes
+    localStorage.setItem("language", language);
+  }, [language]);
 
   // Translation function
   const t = (key: string): string => {
-    return translations[language][key] || key;
+    // Get translation for the current language, fallback to English if not found
+    return translations[language][key] || translations.en[key] || key;
+  };
+
+  // Update language function
+  const setLanguage = (newLanguage: SupportedLanguage) => {
+    setLanguageState(newLanguage);
   };
 
   return (
@@ -749,10 +612,6 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
 };
 
 // Custom hook for using the language context
-export const useLanguage = () => {
-  const context = useContext(LanguageContext);
-  if (!context) {
-    throw new Error('useLanguage must be used within a LanguageProvider');
-  }
-  return context;
-};
+export const useLanguage = () => useContext(LanguageContext);
+
+export default LanguageContext;

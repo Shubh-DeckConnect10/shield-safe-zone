@@ -13,24 +13,24 @@ const AboutHelp = () => {
   
   const faqs = [
     {
-      question: "How does Shield Safe Zone detect scams?",
-      answer: "Shield Safe Zone uses advanced pattern recognition and machine learning to identify common scam patterns in SMS messages and calls. It compares incoming communications against a database of known scam patterns, which is regularly updated to protect against new threats."
+      question: t("faq.question.1"),
+      answer: t("faq.answer.1")
     },
     {
-      question: "Will the app access my personal messages?",
-      answer: "Shield Safe Zone only scans messages for potential scam patterns and does not store or share the content of your personal messages. You can choose local-only processing in settings for enhanced privacy."
+      question: t("faq.question.2"),
+      answer: t("faq.answer.2")
     },
     {
-      question: "How accurate is scam detection?",
-      answer: "Our detection system has a high accuracy rate of over 95%. However, no system is perfect, which is why we allow you to mark safe messages that might be incorrectly flagged. This feedback improves our detection algorithms over time."
+      question: t("faq.question.3"),
+      answer: t("faq.answer.3")
     },
     {
-      question: "What should I do if I receive a scam?",
-      answer: "If you receive a scam message or call, use the app to report it. Avoid clicking on any links or calling back suspicious numbers. If you've already interacted with a scammer, contact your bank immediately and change any compromised passwords."
+      question: t("faq.question.4"),
+      answer: t("faq.answer.4")
     },
     {
-      question: "Does Shield Safe Zone work offline?",
-      answer: "Basic scam detection works offline using the latest downloaded scam patterns. However, for the most up-to-date protection, we recommend regular internet connection to update the scam database."
+      question: t("faq.question.5"),
+      answer: t("faq.answer.5")
     }
   ];
   

@@ -4,12 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { AlertCircle, Plus, UserPlus, Edit, Trash, Share2, Bell } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface EmergencyContact {
   id: string;
@@ -19,6 +20,7 @@ interface EmergencyContact {
 }
 
 const EmergencyAssistance = () => {
+  const { t } = useLanguage();
   const [contacts, setContacts] = useState<EmergencyContact[]>([
     {
       id: "contact1",
@@ -57,8 +59,8 @@ const EmergencyAssistance = () => {
     setNewContact({});
     setIsDialogOpen(false);
     
-    toast.success("Contact added", {
-      description: `${contact.name} has been added as an emergency contact.`
+    toast.success(t("success.support"), {
+      description: `${contact.name} ${t("emergency.contacts")}`
     });
   };
   
@@ -93,7 +95,7 @@ const EmergencyAssistance = () => {
         {/* Emergency Button */}
         <Card className="border-red-300 bg-red-50 dark:bg-red-900/20">
           <CardHeader>
-            <CardTitle className="text-center text-red-600 dark:text-red-400">Emergency Assistance</CardTitle>
+            <CardTitle className="text-center text-red-600 dark:text-red-400">{t("emergency.title")}</CardTitle>
           </CardHeader>
           <CardContent className="flex justify-center pb-8">
             <Button 
@@ -106,7 +108,7 @@ const EmergencyAssistance = () => {
             </Button>
           </CardContent>
           <CardFooter className="text-center text-sm text-muted-foreground">
-            Press the button to send emergency alerts to your trusted contacts
+            {t("emergency.button")}
           </CardFooter>
         </Card>
         
@@ -117,9 +119,9 @@ const EmergencyAssistance = () => {
               <div className="flex items-center gap-2">
                 <Bell className="h-5 w-5 text-primary" />
                 <div>
-                  <h3 className="font-medium">Silent Emergency Mode</h3>
+                  <h3 className="font-medium">{t("emergency.silent")}</h3>
                   <p className="text-xs text-muted-foreground">
-                    Send alerts without sound or vibration
+                    {t("emergency.silent.desc")}
                   </p>
                 </div>
               </div>
@@ -134,7 +136,7 @@ const EmergencyAssistance = () => {
         {/* Emergency Contacts */}
         <div className="space-y-3">
           <div className="flex justify-between items-center">
-            <h2 className="text-lg font-medium">Trusted Contacts</h2>
+            <h2 className="text-lg font-medium">{t("emergency.contacts")}</h2>
             <Button 
               variant="outline" 
               size="sm" 
@@ -142,7 +144,7 @@ const EmergencyAssistance = () => {
               onClick={() => setIsDialogOpen(true)}
               disabled={contacts.length >= 5}
             >
-              <Plus className="h-4 w-4" /> Add
+              <Plus className="h-4 w-4" /> {t("emergency.add")}
             </Button>
           </div>
           
@@ -150,16 +152,16 @@ const EmergencyAssistance = () => {
             <Card>
               <CardContent className="p-6 text-center">
                 <UserPlus className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
-                <h3 className="text-lg font-medium">No Contacts Yet</h3>
+                <h3 className="text-lg font-medium">{t("emergency.contacts")}</h3>
                 <p className="text-sm text-muted-foreground mt-2">
-                  Add trusted contacts who can help in emergency situations.
+                  {t("setup.emergency.desc")}
                 </p>
                 <Button 
                   variant="outline" 
                   className="mt-4"
                   onClick={() => setIsDialogOpen(true)}
                 >
-                  Add Emergency Contact
+                  {t("emergency.add")}
                 </Button>
               </CardContent>
             </Card>
@@ -206,7 +208,7 @@ const EmergencyAssistance = () => {
                   className="w-full gap-1 border-dashed"
                   onClick={() => setIsDialogOpen(true)}
                 >
-                  <Plus className="h-4 w-4" /> Add More Contacts
+                  <Plus className="h-4 w-4" /> {t("emergency.add")}
                 </Button>
               )}
             </div>
@@ -216,12 +218,12 @@ const EmergencyAssistance = () => {
         {/* Emergency Templates */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Emergency Message Templates</CardTitle>
+            <CardTitle className="text-base">{t("emergency.templates")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="bg-muted/50 p-3 rounded-md">
               <div className="flex justify-between">
-                <h4 className="text-sm font-medium">Scam Alert</h4>
+                <h4 className="text-sm font-medium">{t("menu.sms")}</h4>
                 <Button variant="ghost" size="sm" className="h-6 p-1">
                   <Share2 className="h-3.5 w-3.5" />
                 </Button>
@@ -233,7 +235,7 @@ const EmergencyAssistance = () => {
             
             <div className="bg-muted/50 p-3 rounded-md">
               <div className="flex justify-between">
-                <h4 className="text-sm font-medium">Help Needed</h4>
+                <h4 className="text-sm font-medium">{t("about.help")}</h4>
                 <Button variant="ghost" size="sm" className="h-6 p-1">
                   <Share2 className="h-3.5 w-3.5" />
                 </Button>
@@ -246,11 +248,14 @@ const EmergencyAssistance = () => {
         </Card>
       </div>
       
-      {/* Add Contact Dialog */}
+      {/* Add Contact Dialog - Fixed with DialogTitle and DialogDescription */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add Emergency Contact</DialogTitle>
+            <DialogTitle>{t("emergency.add")}</DialogTitle>
+            <DialogDescription>
+              {t("setup.emergency.desc")}
+            </DialogDescription>
           </DialogHeader>
           
           <div className="space-y-4 py-2">
@@ -286,8 +291,8 @@ const EmergencyAssistance = () => {
           </div>
           
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
-            <Button onClick={addContact}>Add Contact</Button>
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>{t("action.cancel")}</Button>
+            <Button onClick={addContact}>{t("action.submit")}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
