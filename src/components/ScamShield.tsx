@@ -16,6 +16,7 @@ import { Card } from "@/components/ui/card";
 import LoadingScreen from "@/components/LoadingScreen";
 import SetupWizard from "@/components/SetupWizard";
 import ThreatHistory from "@/components/ThreatHistory";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export type AppPage = 
   | "home" 
@@ -30,6 +31,7 @@ export type AppPage =
 export type ProtectionStatus = "protected" | "at-risk" | "critical";
 
 const ScamShield = () => {
+  const { t } = useLanguage();
   const [currentPage, setCurrentPage] = useState<AppPage>("home");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [protectionStatus, setProtectionStatus] = useState<ProtectionStatus>("protected");
@@ -54,26 +56,26 @@ const ScamShield = () => {
   const completeSetup = () => {
     localStorage.setItem("setupCompleted", "true");
     setShowSetup(false);
-    toast.success("Setup completed!", {
-      description: "You're now protected against scams."
+    toast.success(t("setup_completed"), {
+      description: t("now_protected")
     });
   };
   
   const skipSetup = () => {
     localStorage.setItem("setupCompleted", "true");
     setShowSetup(false);
-    toast("Setup skipped", {
-      description: "You can complete setup later in Settings."
+    toast(t("setup_skipped"), {
+      description: t("complete_later")
     });
   };
 
   useEffect(() => {
     setTimeout(() => {
-      toast.success("Shield Safe Zone activated!", {
-        description: "You're now protected from scams."
+      toast.success(t("shield_activated"), {
+        description: t("shield_protection")
       });
     }, 1500);
-  }, []);
+  }, [t]);
   
   const handlePageChange = (page: AppPage) => {
     setCurrentPage(page);
@@ -130,14 +132,14 @@ const ScamShield = () => {
   };
 
   const menuItems = [
-    { id: "home", label: "Home", icon: <Home className="h-5 w-5" /> },
-    { id: "sms", label: "SMS Detection", icon: <MessageSquare className="h-5 w-5" /> },
-    { id: "call", label: "Call Monitoring", icon: <Phone className="h-5 w-5" /> },
-    { id: "history", label: "Threat History", icon: <History className="h-5 w-5" /> },
-    { id: "education", label: "Scam Education", icon: <BookOpen className="h-5 w-5" /> },
-    { id: "emergency", label: "Emergency Help", icon: <AlertCircle className="h-5 w-5" /> },
-    { id: "settings", label: "Settings", icon: <Settings className="h-5 w-5" /> },
-    { id: "about", label: "About/Help", icon: <Bell className="h-5 w-5" /> },
+    { id: "home", label: t("menu_home"), icon: <Home className="h-5 w-5" /> },
+    { id: "sms", label: t("menu_sms_detection"), icon: <MessageSquare className="h-5 w-5" /> },
+    { id: "call", label: t("menu_call_monitoring"), icon: <Phone className="h-5 w-5" /> },
+    { id: "history", label: t("menu_threat_history"), icon: <History className="h-5 w-5" /> },
+    { id: "education", label: t("menu_scam_education"), icon: <BookOpen className="h-5 w-5" /> },
+    { id: "emergency", label: t("menu_emergency_help"), icon: <AlertCircle className="h-5 w-5" /> },
+    { id: "settings", label: t("menu_settings"), icon: <Settings className="h-5 w-5" /> },
+    { id: "about", label: t("menu_about"), icon: <Bell className="h-5 w-5" /> },
   ];
 
   if (isLoading) {
@@ -163,7 +165,7 @@ const ScamShield = () => {
               <div className="p-4 bg-background h-full overflow-y-auto">
                 <div className="flex items-center gap-2 mb-8">
                   <Shield className="h-8 w-8 text-primary" />
-                  <h2 className="text-xl font-medium">Shield Safe Zone</h2>
+                  <h2 className="text-xl font-medium">{t("app_name")}</h2>
                 </div>
                 
                 <nav className="space-y-1">
@@ -186,14 +188,14 @@ const ScamShield = () => {
                   <Card className="p-4 bg-primary/10">
                     <div className="flex items-center gap-2 text-sm">
                       <Shield className="h-4 w-4" />
-                      <span>v1.0.0 Beta</span>
+                      <span>{t("version")}</span>
                     </div>
                   </Card>
                 </div>
               </div>
             </DrawerContent>
           </Drawer>
-          <h1 className="text-xl font-medium">Shield Safe Zone</h1>
+          <h1 className="text-xl font-medium">{t("app_name")}</h1>
         </div>
         <div className="flex items-center gap-2">
           <Button 

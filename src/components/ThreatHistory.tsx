@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type ThreatType = "sms" | "call";
 type RiskLevel = "high" | "medium" | "low";
@@ -31,6 +33,7 @@ interface ThreatDetail {
 }
 
 const ThreatHistory = () => {
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
   const [filterRisk, setFilterRisk] = useState<RiskLevel | "all">("all");
   const [filterType, setFilterType] = useState<ThreatType | "all">("all");
@@ -98,11 +101,11 @@ const ThreatHistory = () => {
   const getRiskBadge = (risk: RiskLevel) => {
     switch (risk) {
       case "high":
-        return <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">High Risk</Badge>;
+        return <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">{t("high_risk")}</Badge>;
       case "medium":
-        return <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">Medium Risk</Badge>;
+        return <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">{t("medium_risk")}</Badge>;
       case "low":
-        return <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">Low Risk</Badge>;
+        return <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">{t("low_risk")}</Badge>;
     }
   };
   
@@ -133,8 +136,8 @@ const ThreatHistory = () => {
   });
 
   const submitFeedback = (id: string, feedback: "safe" | "unsafe" | "uncertain") => {
-    toast.success("Thank you for your feedback", {
-      description: "Your input helps improve our detection system."
+    toast.success(t("feedback_thanks"), {
+      description: t("feedback_helps")
     });
   };
 
@@ -144,7 +147,7 @@ const ThreatHistory = () => {
         <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
           <ArrowLeft className="h-5 w-5" />
         </Button>
-        <h1 className="text-lg font-medium">Threat History</h1>
+        <h1 className="text-lg font-medium">{t("threat_history")}</h1>
       </div>
       
       <div className="p-4 space-y-4">
@@ -152,7 +155,7 @@ const ThreatHistory = () => {
           <div className="relative flex-1">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search threats..."
+              placeholder={t("search_threats")}
               className="pl-8"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -167,7 +170,7 @@ const ThreatHistory = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <div className="p-2">
-                <p className="text-sm font-medium mb-1">Risk Level</p>
+                <p className="text-sm font-medium mb-1">{t("risk_level")}</p>
                 <div className="grid grid-cols-2 gap-1">
                   <Button 
                     variant={filterRisk === "all" ? "default" : "outline"} 
@@ -175,7 +178,7 @@ const ThreatHistory = () => {
                     onClick={() => setFilterRisk("all")}
                     className="text-xs h-7"
                   >
-                    All
+                    {t("all")}
                   </Button>
                   <Button 
                     variant={filterRisk === "high" ? "default" : "outline"} 
@@ -183,7 +186,7 @@ const ThreatHistory = () => {
                     onClick={() => setFilterRisk("high")}
                     className="text-xs h-7"
                   >
-                    High
+                    {t("high_risk")}
                   </Button>
                   <Button 
                     variant={filterRisk === "medium" ? "default" : "outline"} 
@@ -191,7 +194,7 @@ const ThreatHistory = () => {
                     onClick={() => setFilterRisk("medium")}
                     className="text-xs h-7"
                   >
-                    Medium
+                    {t("medium_risk")}
                   </Button>
                   <Button 
                     variant={filterRisk === "low" ? "default" : "outline"} 
@@ -199,11 +202,11 @@ const ThreatHistory = () => {
                     onClick={() => setFilterRisk("low")}
                     className="text-xs h-7"
                   >
-                    Low
+                    {t("low_risk")}
                   </Button>
                 </div>
                 
-                <p className="text-sm font-medium mb-1 mt-3">Threat Type</p>
+                <p className="text-sm font-medium mb-1 mt-3">{t("threat_type")}</p>
                 <div className="grid grid-cols-3 gap-1">
                   <Button 
                     variant={filterType === "all" ? "default" : "outline"} 
@@ -211,7 +214,7 @@ const ThreatHistory = () => {
                     onClick={() => setFilterType("all")}
                     className="text-xs h-7"
                   >
-                    All
+                    {t("all")}
                   </Button>
                   <Button 
                     variant={filterType === "sms" ? "default" : "outline"} 
@@ -219,7 +222,7 @@ const ThreatHistory = () => {
                     onClick={() => setFilterType("sms")}
                     className="text-xs h-7"
                   >
-                    SMS
+                    {t("sms")}
                   </Button>
                   <Button 
                     variant={filterType === "call" ? "default" : "outline"} 
@@ -227,7 +230,7 @@ const ThreatHistory = () => {
                     onClick={() => setFilterType("call")}
                     className="text-xs h-7"
                   >
-                    Calls
+                    {t("calls")}
                   </Button>
                 </div>
               </div>
@@ -241,23 +244,23 @@ const ThreatHistory = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => {}}>Today</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => {}}>This Week</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => {}}>This Month</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => {}}>All Time</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => {}}>{t("today")}</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => {}}>{t("this_week")}</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => {}}>{t("this_month")}</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => {}}>{t("all_time")}</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
         
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
-            {filteredThreats.length} threat{filteredThreats.length !== 1 ? 's' : ''} found
+            {filteredThreats.length} {filteredThreats.length === 1 ? t("threat_found") : t("threats_found")}
           </p>
           <Tabs defaultValue="all" className="w-auto">
             <TabsList className="grid grid-cols-3">
-              <TabsTrigger value="all">All</TabsTrigger>
-              <TabsTrigger value="sms">SMS</TabsTrigger>
-              <TabsTrigger value="calls">Calls</TabsTrigger>
+              <TabsTrigger value="all">{t("all")}</TabsTrigger>
+              <TabsTrigger value="sms">{t("sms")}</TabsTrigger>
+              <TabsTrigger value="calls">{t("calls")}</TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
@@ -287,7 +290,7 @@ const ThreatHistory = () => {
                   <p className="text-sm mb-3">{threat.content}</p>
                   
                   <div className="mt-2 space-y-2">
-                    <p className="text-xs font-medium">Why was this flagged?</p>
+                    <p className="text-xs font-medium">{t("why_flagged")}</p>
                     <ul className="text-xs text-muted-foreground space-y-1">
                       {threat.reasons.map((reason, idx) => (
                         <li key={idx} className="flex items-center gap-1">
@@ -299,7 +302,7 @@ const ThreatHistory = () => {
                     
                     {threat.threatWords && (
                       <div className="mt-3">
-                        <p className="text-xs font-medium">Detected threat words:</p>
+                        <p className="text-xs font-medium">{t("detected_threat")}</p>
                         <div className="flex flex-wrap gap-1 mt-1">
                           {threat.threatWords.map((word, idx) => (
                             <Badge key={idx} variant="outline" className="text-xs">
@@ -318,7 +321,7 @@ const ThreatHistory = () => {
                       className={`${threat.feedback === 'safe' ? 'bg-green-100' : ''}`}
                       onClick={() => submitFeedback(threat.id, 'safe')}
                     >
-                      <CheckCircle className="h-4 w-4 mr-1" /> Safe
+                      <CheckCircle className="h-4 w-4 mr-1" /> {t("safe")}
                     </Button>
                     <Button
                       variant="outline"
@@ -326,7 +329,7 @@ const ThreatHistory = () => {
                       className={`${threat.feedback === 'unsafe' ? 'bg-red-100' : ''}`}
                       onClick={() => submitFeedback(threat.id, 'unsafe')}
                     >
-                      <AlertTriangle className="h-4 w-4 mr-1" /> Unsafe
+                      <AlertTriangle className="h-4 w-4 mr-1" /> {t("unsafe")}
                     </Button>
                     <Button
                       variant="outline"
@@ -334,7 +337,7 @@ const ThreatHistory = () => {
                       className={`${threat.feedback === 'uncertain' ? 'bg-yellow-100' : ''}`}
                       onClick={() => submitFeedback(threat.id, 'uncertain')}
                     >
-                      <HelpCircle className="h-4 w-4 mr-1" /> Not Sure
+                      <HelpCircle className="h-4 w-4 mr-1" /> {t("not_sure")}
                     </Button>
                   </div>
                 </CardContent>
@@ -343,9 +346,9 @@ const ThreatHistory = () => {
           ) : (
             <div className="text-center py-8">
               <Shield className="h-12 w-12 text-muted-foreground/50 mx-auto mb-2" />
-              <h3 className="text-lg font-medium">No threats found</h3>
+              <h3 className="text-lg font-medium">{t("no_threats")}</h3>
               <p className="text-sm text-muted-foreground mt-1">
-                Try adjusting your search or filters
+                {t("adjust_search")}
               </p>
             </div>
           )}
