@@ -2,7 +2,7 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'app.lovable.924b94367bc147db98ce451bc45fe724',
+  appId: 'com.shieldsafezone.app',
   appName: 'shield-safe-zone',
   webDir: 'dist',
   server: {
