@@ -7,8 +7,8 @@ import AppContent from "@/components/AppContent";
 import LoadingScreen from "@/components/LoadingScreen";
 import SetupWizard from "@/components/SetupWizard";
 
-// Re-export types from the types file
-export { AppPage, ProtectionStatus } from "@/types/app";
+// Re-export types from the types file using 'export type'
+export type { AppPage, ProtectionStatus } from "@/types/app";
 
 const ScamShieldContent = () => {
   const { isLoading, showSetup, completeSetup, skipSetup, darkMode } = useAppContext();

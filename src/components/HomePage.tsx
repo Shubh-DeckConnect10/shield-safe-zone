@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Shield, AlertCircle, Search, ArrowRight, TrendingUp, BookOpen, History } from "lucide-react";
-import type { ProtectionStatus } from "./ScamShield";
+import type { ProtectionStatus } from "@/types/app";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
