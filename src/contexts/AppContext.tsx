@@ -30,10 +30,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
   
   useEffect(() => {
     const hasCompletedSetup = localStorage.getItem("setupCompleted");
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
     
     const timer = setTimeout(() => {
       setIsLoading(false);
-      if (!hasCompletedSetup) {
+      if (!hasCompletedSetup && !isLoggedIn) {
         setShowSetup(true);
       }
     }, 2000);

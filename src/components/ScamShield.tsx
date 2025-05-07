@@ -31,6 +31,7 @@ const ScamShieldContent = () => {
 };
 
 const ScamShield = () => {
+  // Authentication is now handled by ProtectedRoute
   return (
     <AppProvider>
       <ScamShieldContent />
